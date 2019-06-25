@@ -8,7 +8,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 ## Usage
 
 ```
-action "Update Docker Hub Repository Description" {
+action "Docker Hub Description" {
   uses = "peter-evans/dockerhub-description@v1.0.0"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
 }
@@ -26,7 +26,7 @@ The action assumes that there is a file called `README.md` located at the root o
 If this is not the case, the path can be overridden with an environment variable.
 
 ```
-action "Update Docker Hub Repository Description" {
+action "Docker Hub Description" {
   uses = "peter-evans/dockerhub-description@v1.0.0"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
   env = {
@@ -39,9 +39,9 @@ action "Update Docker Hub Repository Description" {
 
 Updates the Docker Hub repository description whenever there is a `git push` to the `master` branch.
 ```
-workflow "New workflow" {
+workflow "Update Docker Hub Description" {
+  resolves = ["Docker Hub Description"]
   on = "push"
-  resolves = ["Update Docker Hub Repository Description"]
 }
 
 action "Filter master branch" {
@@ -49,7 +49,7 @@ action "Filter master branch" {
   args = "branch master"
 }
 
-action "Update Docker Hub Repository Description" {
+action "Docker Hub Description" {
   needs = ["Filter master branch"]
   uses = "peter-evans/dockerhub-description@v1.0.0"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
@@ -58,12 +58,12 @@ action "Update Docker Hub Repository Description" {
 
 Updates the Docker Hub repository description whenever a new release is created.
 ```
-workflow "New workflow" {
+workflow "Update Docker Hub Description" {
+  resolves = ["Docker Hub Description"]
   on = "release"
-  resolves = ["Update Docker Hub Repository Description"]
 }
 
-action "Update Docker Hub Repository Description" {
+action "Docker Hub Description" {
   uses = "peter-evans/dockerhub-description@v1.0.0"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
 }
