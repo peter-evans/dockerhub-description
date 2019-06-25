@@ -18,7 +18,9 @@ action "Docker Hub Description" {
 
 - `DOCKERHUB_USERNAME` - Docker Hub username
 - `DOCKERHUB_PASSWORD` - Docker Hub password
-- `DOCKERHUB_REPOSITORY` - The name of the Docker Hub repository to update. (This may also be an environment variable if not considered sensitive)
+- `DOCKERHUB_REPOSITORY` - The name of the Docker Hub repository to update. The action combines this with the username to locate the repository. i.e. `username/repository`
+
+Note that `DOCKERHUB_USERNAME` and `DOCKERHUB_REPOSITORY` may also be environment variables if not considered sensitive.
 
 #### Optionally specifying the file path
 
