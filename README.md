@@ -8,7 +8,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 ```
 action "Update Docker Hub Repository Description" {
-  uses = "peter-evans/dockerhub-description@1.0"
+  uses = "peter-evans/dockerhub-description@master"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
 }
 ```
@@ -26,7 +26,7 @@ If this is not the case, the path can be overridden with an environment variable
 
 ```
 action "Update Docker Hub Repository Description" {
-  uses = "peter-evans/dockerhub-description@1.0"
+  uses = "peter-evans/dockerhub-description@master"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
   env = {
     README_FILEPATH = "./some-path/README.md"
@@ -50,7 +50,7 @@ action "Filter master branch" {
 
 action "Update Docker Hub Repository Description" {
   needs = ["Filter master branch"]
-  uses = "peter-evans/dockerhub-description@1.0"
+  uses = "peter-evans/dockerhub-description@master"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
 }
 ```
@@ -63,7 +63,7 @@ workflow "New workflow" {
 }
 
 action "Update Docker Hub Repository Description" {
-  uses = "peter-evans/dockerhub-description@1.0"
+  uses = "peter-evans/dockerhub-description@master"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
 }
 ```
