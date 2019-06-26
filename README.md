@@ -47,7 +47,7 @@ workflow "Update Docker Hub Description" {
 }
 
 action "Filter master branch" {
-  uses = "actions/bin/filter@v1.0.0"
+  uses = "actions/bin/filter@master"
   args = "branch master"
 }
 
