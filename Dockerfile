@@ -9,7 +9,7 @@ LABEL com.github.actions.description="An action to update a Docker Hub repositor
 LABEL com.github.actions.icon="upload"
 LABEL com.github.actions.color="blue"
 
-COPY LICENSE README.md
+COPY LICENSE README.md /
 
 COPY entrypoint.sh /entrypoint.sh
 
