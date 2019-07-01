@@ -8,7 +8,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 ## Usage
 
-```
+```hcl
 action "Docker Hub Description" {
   uses = "peter-evans/dockerhub-description@v1.0.1"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
@@ -28,7 +28,7 @@ Note that `DOCKERHUB_USERNAME` and `DOCKERHUB_REPOSITORY` may also be environmen
 The action assumes that there is a file called `README.md` located at the root of the repository.
 If this is not the case, the path can be overridden with an environment variable.
 
-```
+```hcl
 action "Docker Hub Description" {
   uses = "peter-evans/dockerhub-description@v1.0.1"
   secrets = ["DOCKERHUB_USERNAME", "DOCKERHUB_PASSWORD", "DOCKERHUB_REPOSITORY"]
@@ -41,7 +41,7 @@ action "Docker Hub Description" {
 #### Examples
 
 Updates the Docker Hub repository description whenever there is a `git push` to the `master` branch.
-```
+```hcl
 workflow "Update Docker Hub Description" {
   resolves = ["Docker Hub Description"]
   on = "push"
@@ -60,7 +60,7 @@ action "Docker Hub Description" {
 ```
 
 Updates the Docker Hub repository description whenever a new release is created.
-```
+```hcl
 workflow "Update Docker Hub Description" {
   resolves = ["Docker Hub Description"]
   on = "release"
