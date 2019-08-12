@@ -1,0 +1,17 @@
+on: push
+name: Update Docker Hub Description
+jobs:
+  dockerHubDescription:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Filter master branch
+      uses: actions/bin/filter@master
+      with:
+        args: branch master
+    - name: Docker Hub Description
+      uses: ./
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
