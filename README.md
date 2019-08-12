@@ -44,17 +44,16 @@ If this is not the case, the path can be overridden with an environment variable
 
 Updates the Docker Hub repository description whenever there is a `git push` to the `master` branch.
 ```yml
-on: push
 name: Update Docker Hub Description
+on:
+  push:
+    branches:
+    - master
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Filter master branch
-      uses: actions/bin/filter@master
-      with:
-        args: branch master
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v1.0.1
       env:
@@ -65,8 +64,8 @@ jobs:
 
 Updates the Docker Hub repository description whenever a new release is created.
 ```yml
-on: release
 name: Update Docker Hub Description
+on: release
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
