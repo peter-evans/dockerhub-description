@@ -1,14 +1,13 @@
-on: push
 name: Update Docker Hub Description
+on:
+  push:
+    branches:
+    - master
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Filter master branch
-      uses: actions/bin/filter@master
-      with:
-        args: branch master
     - name: Docker Hub Description
       uses: ./
       env:
