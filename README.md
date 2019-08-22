@@ -14,16 +14,16 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
 ```
 
-#### Required secrets
+#### Required environment variables
 
 - `DOCKERHUB_USERNAME` - Docker Hub username
 - `DOCKERHUB_PASSWORD` - Docker Hub password
-- `DOCKERHUB_REPOSITORY` - The name of the Docker Hub repository to update. The action combines this with the username to locate the repository. i.e. `username/repository`
+- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`
 
-Note that `DOCKERHUB_USERNAME` and `DOCKERHUB_REPOSITORY` may also be environment variables if not considered sensitive.
+Note that `DOCKERHUB_REPOSITORY` may also be passed as a secret if considered sensitive.
 
 #### Optionally specifying the file path
 
@@ -36,7 +36,7 @@ If this is not the case, the path can be overridden with an environment variable
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
         README_FILEPATH: ./some-path/README.md
 ```
 
@@ -59,7 +59,7 @@ jobs:
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
 ```
 
 Updates the Docker Hub repository description whenever a new release is created.
@@ -76,7 +76,7 @@ jobs:
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
 ```
 
 ## Using the Docker image independently of GitHub Actions
@@ -88,7 +88,7 @@ Simply volume mount the location of the `README.md` file to the container and se
 docker run -v $PWD:/workspace \
   -e DOCKERHUB_USERNAME='user1' \
   -e DOCKERHUB_PASSWORD='xxxxx' \
-  -e DOCKERHUB_REPOSITORY='my-docker-image' \
+  -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
   -e README_FILEPATH='/workspace/README.md' \
   peterevans/dockerhub-description:1.0.1
 ```
