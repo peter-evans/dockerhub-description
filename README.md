@@ -19,9 +19,9 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 #### Required environment variables
 
-- `DOCKERHUB_USERNAME` - Docker Hub username
-- `DOCKERHUB_PASSWORD` - Docker Hub password
-- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`
+- `DOCKERHUB_USERNAME` - Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository.
+- `DOCKERHUB_PASSWORD` - Docker Hub password.
+- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`.
 
 Note that `DOCKERHUB_REPOSITORY` may also be passed as a secret if considered sensitive.
 
