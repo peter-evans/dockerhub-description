@@ -1,0 +1,9 @@
+name: 'Docker Hub Description'
+author: 'Peter Evans'
+description: 'An action to update a Docker Hub repository description from README.md'
+runs:
+  using: 'docker'
+  image: 'docker://peterevans/dockerhub-description:2.1.0'
+branding:
+  icon: 'upload'  
+  color: 'blue'
