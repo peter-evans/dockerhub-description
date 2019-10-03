@@ -10,7 +10,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2.0.0
+      uses: peter-evans/dockerhub-description@v2.1.0
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -32,7 +32,7 @@ If this is not the case, the path can be overridden with an environment variable
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2.0.0
+      uses: peter-evans/dockerhub-description@v2.1.0
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -53,9 +53,9 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2.0.0
+      uses: peter-evans/dockerhub-description@v2.1.0
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -70,9 +70,9 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2.0.0
+      uses: peter-evans/dockerhub-description@v2.1.0
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -90,7 +90,7 @@ docker run -v $PWD:/workspace \
   -e DOCKERHUB_PASSWORD='xxxxx' \
   -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
   -e README_FILEPATH='/workspace/README.md' \
-  peterevans/dockerhub-description:2.0.0
+  peterevans/dockerhub-description:2.1.0
 ```
 
 ## License
