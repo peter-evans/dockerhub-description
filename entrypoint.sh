@@ -1,9 +1,15 @@
 #!/bin/sh -l
 set -euo pipefail
 IFS=$'\n\t'
+WORKSPACE="/github/workspace"
 
 # Set the default path to README.md
-README_FILEPATH=${README_FILEPATH:="./README.md"}
+if [ -z "${README_FILEPATH}" ]
+then
+      README_FILEPATH="${WORKSPACE}/README.md"}
+else
+      README_FILEPATH="${WORKSPACE}/${README_FILEPATH}"
+fi
 
 # Acquire a token for the Docker Hub API
 echo "Acquiring token"
