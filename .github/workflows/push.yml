@@ -11,7 +11,7 @@ jobs:
       - name: Copy README.md to TEST.md
         run: |
           mkdir -p some/path
-          cp README.md some/path/TEST.md
+          mv README.md some/path/TEST.md
       - name: Docker Hub Description
         uses: ./
         env:
