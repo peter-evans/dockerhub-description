@@ -41,13 +41,17 @@ If this is not the case, the path can be overridden with an environment variable
 
 #### Examples
 
-Updates the Docker Hub repository description whenever there is a `git push` to the `master` branch.
+The following workflow updates the Docker Hub repository description whenever there are changes to `README.md` and the workflow file itself on the `master` branch. This workflow assumes its location to be `.github/workflows/dockerhub-description.yml`.
+
 ```yml
 name: Update Docker Hub Description
 on:
   push:
     branches:
-    - master
+      - master
+    paths:
+      - README.md
+      - .github/workflows/dockerhub-description.yml
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
@@ -62,6 +66,7 @@ jobs:
 ```
 
 Updates the Docker Hub repository description whenever a new release is created.
+
 ```yml
 name: Update Docker Hub Description
 on: release
@@ -94,4 +99,4 @@ docker run -v $PWD:/workspace \
 
 ## License
 
-MIT License - see the [LICENSE](LICENSE) file for details
+[MIT](LICENSE)
