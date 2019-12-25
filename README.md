@@ -20,9 +20,9 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 - `DOCKERHUB_USERNAME` - Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository.
 - `DOCKERHUB_PASSWORD` - Docker Hub password.
-- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`.
+- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`. May also be passed as a secret if considered sensitive.
 
-Note that `DOCKERHUB_REPOSITORY` may also be passed as a secret if considered sensitive.
+**Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details.
 
 #### Optionally specifying the file path
 
