@@ -22,7 +22,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 - `DOCKERHUB_PASSWORD` - Docker Hub password.
 - `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`. May also be passed as a secret if considered sensitive.
 
-**Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details.
+**Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details. Unfortunately, this means that enabling the new 2FA feature on Docker Hub will prevent the action from working.
 
 #### Optionally specifying the file path
 
