@@ -56,7 +56,7 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2.1.0
       env:
@@ -74,7 +74,7 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2.1.0
       env:
