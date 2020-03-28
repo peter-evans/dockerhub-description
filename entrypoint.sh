@@ -5,6 +5,12 @@ IFS=$'\n\t'
 # Set the default path to README.md
 README_FILEPATH=${README_FILEPATH:="./README.md"}
 
+# Check the file size
+if [ $(wc -c <${README_FILEPATH}) -gt 25000 ]; then
+  echo "File size exceeds the maximum allowed 25000 bytes"
+  exit 1
+fi
+
 # Acquire a token for the Docker Hub API
 echo "Acquiring token"
 LOGIN_PAYLOAD="{\"username\": \"${DOCKERHUB_USERNAME}\", \"password\": \"${DOCKERHUB_PASSWORD}\"}"
