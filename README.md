@@ -18,9 +18,9 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 #### Required environment variables
 
-- `DOCKERHUB_USERNAME` - Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository.
-- `DOCKERHUB_PASSWORD` - Docker Hub password.
-- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`. May also be passed as a secret if considered sensitive.
+- `DOCKERHUB_USERNAME` - Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. Aliases: `DOCKER_USERNAME`
+- `DOCKERHUB_PASSWORD` - Docker Hub password. Fallback to `DOCKER_PASSWORD` if set. Aliases: `DOCKER_PASSWORD`
+- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`. May also be passed as a secret if considered sensitive. Aliases: `DOCKER_REPOSITORY`, `GITHUB_REPOSITORY`
 
 **Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details. Unfortunately, this means that enabling the new 2FA feature on Docker Hub will prevent the action from working.
 
