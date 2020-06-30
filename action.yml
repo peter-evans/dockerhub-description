@@ -5,5 +5,15 @@ runs:
   using: 'docker'
   image: 'docker://peterevans/dockerhub-description:2.1.1'
 branding:
-  icon: 'upload'  
+  icon: 'upload'
   color: 'blue'
+inputs:
+  dockerhubUsername:
+    description: Username to login to Docker Hub. Aliases: DOCKER_USERNAME
+    required: false
+  dockerhubPassword:
+    description: Password to login to Docker Hub. Aliases: DOCKER_PASSWORD
+    required: false
+  dockerhubRepository:
+    description: Explicit Docker Hub repository name. Aliases: DOCKER_REPOSITORY, GITHUB_REPOSITORY
+    required: false

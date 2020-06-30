@@ -1,6 +1,26 @@
 #!/bin/sh -l
-set -euo pipefail
+set -eo pipefail
 IFS=$'\n\t'
+
+# Allow DOCKERHUB_* variables to be set from their DOCKER_* variant
+DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME:-${DOCKER_USERNAME}}
+DOCKERHUB_PASSWORD=${DOCKERHUB_PASSWORD:-${DOCKER_PASSWORD}}
+DOCKERHUB_REPOSITORY=${DOCKERHUB_REPOSITORY:-${DOCKER_REPOSITORY}}
+
+# If the repository isn't explicitly defined, infer it from GitHub if possible
+DOCKERHUB_REPOSITORY=${DOCKERHUB_REPOSITORY:-${GITHUB_REPOSITORY}}
+
+# Validate we can authenticate
+if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_PASSWORD" ]; then
+  echo 'Unable to authenticate with Docker Hub, set a valid $DOCKERHUB_USERNAME and $DOCKERHUB_PASSWORD'
+  exit 1
+fi
+
+# Validate we have the repository name
+if [ -z "$DOCKERHUB_REPOSITORY" ]; then
+  echo 'Unable to determine Docker Hub repository name, set with $DOCKERHUB_REPOSITORY'
+  exit 1
+fi
 
 # Set the default path to README.md
 README_FILEPATH=${README_FILEPATH:="./README.md"}
