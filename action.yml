@@ -4,13 +4,13 @@ description: 'An action to update a Docker Hub repository description from READM
 # env:
 #   DOCKERHUB_USERNAME:
 #     description: Username to login to Docker Hub. Aliases: DOCKER_USERNAME
-#     required: false
+#     required: true
 #   DOCKERHUB_PASSWORD:
 #     description: Password to login to Docker Hub. Aliases: DOCKER_PASSWORD
-#     required: false
+#     required: true
 #   DOCKERHUB_REPOSITORY:
 #     description: Explicit Docker Hub repository name. Aliases: DOCKER_REPOSITORY, GITHUB_REPOSITORY
-#     required: false
+#     required: true
 #   README_FILEPATH:
 #     description: Path to the repository readme.
 #     default: ./README.md
