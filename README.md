@@ -94,7 +94,7 @@ docker run -v $PWD:/workspace \
   -e DOCKERHUB_PASSWORD='xxxxx' \
   -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
   -e README_FILEPATH='/workspace/README.md' \
-  peterevans/dockerhub-description:2.2
+  peterevans/dockerhub-description:2.3
 ```
 
 ## License
