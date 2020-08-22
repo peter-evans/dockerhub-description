@@ -16,7 +16,7 @@ description: 'An action to update a Docker Hub repository description from READM
 #     default: ./README.md
 runs:
   using: 'docker'
-  image: 'docker://peterevans/dockerhub-description:2.3.0'
+  image: 'docker://peterevans/dockerhub-description:2.3.1'
 branding:
   icon: 'upload'
   color: 'blue'
