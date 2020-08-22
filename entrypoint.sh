@@ -25,6 +25,12 @@ fi
 # Set the default path to README.md
 README_FILEPATH=${README_FILEPATH:="./README.md"}
 
+# Check the file exists
+if [ ! -f ${README_FILEPATH} ]; then
+  echo "Readme file not found"
+  exit 1
+fi
+
 # Check the file size
 if [ $(wc -c <${README_FILEPATH}) -gt 25000 ]; then
   echo "File size exceeds the maximum allowed 25000 bytes"
