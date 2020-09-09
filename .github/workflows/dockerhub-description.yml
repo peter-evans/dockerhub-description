@@ -12,10 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Copy README.md to TEST.md
+
+      - name: Modify readme for DockerHub
+        run: |
+          sed -i 's/# Docker Hub Description/# [Docker Hub Description](https:\/\/github.com\/peter-evans\/dockerhub-description)/' README.md
+          sed -i 's/(LICENSE)/(https:\/\/github.com\/peter-evans\/dockerhub-description\/blob\/master\/LICENSE)/' README.md
+
+      - name: Test non-default filepath
         run: |
           mkdir -p some/path
           mv README.md some/path/TEST.md
+
       - name: Docker Hub Description
         uses: ./
         env:
