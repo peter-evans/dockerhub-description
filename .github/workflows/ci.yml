@@ -57,15 +57,15 @@ jobs:
       - name: Prepare non-default filepath
         run: |
           mkdir -p some/path
-          mv README.md some/path/TEST.md
+          cp README.md some/path/TEST.md
 
-      # - name: Docker Hub Description
-      #   uses: ./
-      #   with:
-      #     dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      #     dockerhub-repository: peterevans/dd-ci-fixture-${{ matrix.target }}
-      #     readme-filepath: ./some/path/TEST.md
+      - name: Docker Hub Description
+        uses: ./
+        with:
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerhub-repository: peterevans/dd-ci-fixture-${{ matrix.target }}
+          readme-filepath: ./some/path/TEST.md
 
       - name: Docker Hub Description
         uses: ./
@@ -73,7 +73,6 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           DOCKERHUB_REPOSITORY: peterevans/dd-ci-fixture-${{ matrix.target }}
-          README_FILEPATH: ./some/path/TEST.md
 
   package:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
