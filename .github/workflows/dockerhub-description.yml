@@ -18,15 +18,9 @@ jobs:
           sed -i 's/# Docker Hub Description/# [Docker Hub Description](https:\/\/github.com\/peter-evans\/dockerhub-description)/' README.md
           sed -i 's/(LICENSE)/(https:\/\/github.com\/peter-evans\/dockerhub-description\/blob\/master\/LICENSE)/' README.md
 
-      - name: Test non-default filepath
-        run: |
-          mkdir -p some/path
-          mv README.md some/path/TEST.md
-
       - name: Docker Hub Description
         uses: ./
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-          DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
-          README_FILEPATH: ./some/path/TEST.md
+        with:
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerhub-repository: peterevans/dockerhub-description
