@@ -1,22 +1,28 @@
 name: 'Docker Hub Description'
 author: 'Peter Evans'
 description: 'An action to update a Docker Hub repository description from README.md'
-# env:
-#   DOCKERHUB_USERNAME:
-#     description: Username to login to Docker Hub. Aliases: DOCKER_USERNAME
-#     required: true
-#   DOCKERHUB_PASSWORD:
-#     description: Password to login to Docker Hub. Aliases: DOCKER_PASSWORD
-#     required: true
-#   DOCKERHUB_REPOSITORY:
-#     description: Explicit Docker Hub repository name. Aliases: DOCKER_REPOSITORY, GITHUB_REPOSITORY
-#     required: true
-#   README_FILEPATH:
-#     description: Path to the repository readme.
-#     default: ./README.md
+inputs:
+  username:
+    description: Docker Hub username
+    required: true
+  password:
+    description: Docker Hub password
+    required: true
+  repository:
+    description: >
+      Docker Hub repository in the format `<namespace>/<name>`
+      Default: `github.repository`
+  short-description:
+    description: >
+      Docker Hub repository short description
+      Input exceeding 100 characters will be truncated
+  readme-filepath:
+    description: >
+      Path to the repository readme
+      Default: `./README.md`
 runs:
-  using: 'docker'
-  image: 'docker://peterevans/dockerhub-description:2.3.1'
+  using: 'node12'
+  main: 'dist/index.js'
 branding:
   icon: 'upload'
   color: 'blue'

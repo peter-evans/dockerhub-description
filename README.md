@@ -10,36 +10,40 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 ```yml
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: peterevans/dockerhub-description
 ```
 
-#### Required environment variables
+### Action inputs
 
-- `DOCKERHUB_USERNAME` - Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. Aliases: `DOCKER_USERNAME`
-- `DOCKERHUB_PASSWORD` - Docker Hub password. Fallback to `DOCKER_PASSWORD` if set. Aliases: `DOCKER_PASSWORD`
-- `DOCKERHUB_REPOSITORY` - The Docker Hub repository to update in the format `<namespace>/<name>`. May also be passed as a secret if considered sensitive. Aliases: `DOCKER_REPOSITORY`, `GITHUB_REPOSITORY`
+**Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details. Unfortunately, this means that enabling 2FA on Docker Hub will prevent the action from working.
 
-**Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details. Unfortunately, this means that enabling the new 2FA feature on Docker Hub will prevent the action from working.
+| Name | Description | Default |
+| --- | --- | --- |
+| `username` | (**required**) Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. | |
+| `password` | (**required**) Docker Hub password. | |
+| `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
+| `short-description` | Docker Hub repository short description. Input exceeding 100 characters will be truncated. | |
+| `readme-filepath` | Path to the repository readme. | `./README.md` |
 
-#### Optionally specifying the file path
+#### Specifying the file path
 
 The action assumes that there is a file called `README.md` located at the root of the repository.
-If this is not the case, the path can be overridden with an environment variable.
+If this is not the case the path can be specified with the `readme-filepath` input.
 
 ```yml
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
-        README_FILEPATH: ./some-path/README.md
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: peterevans/dockerhub-description
+        readme-filepath: ./path/to/README.md
 ```
 
-#### Examples
+### Examples
 
 The following workflow updates the Docker Hub repository description whenever there are changes to `README.md` and the workflow file itself on the `master` branch. This workflow assumes its location to be `.github/workflows/dockerhub-description.yml`.
 
@@ -57,12 +61,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: peterevans/dockerhub-description
 ```
 
 Updates the Docker Hub repository description whenever a new release is created.
@@ -75,12 +80,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: peterevans/dockerhub-description
 ```
 
 ## Using the Docker image independently of GitHub Actions
@@ -94,7 +100,7 @@ docker run -v $PWD:/workspace \
   -e DOCKERHUB_PASSWORD='xxxxx' \
   -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
   -e README_FILEPATH='/workspace/README.md' \
-  peterevans/dockerhub-description:2.3
+  peterevans/dockerhub-description:2
 ```
 
 ## License

@@ -1,15 +1,17 @@
-FROM peterevans/curl-jq:1.0.1
+FROM node:12-alpine
 
-LABEL maintainer="Peter Evans <mail@peterevans.dev>"
-LABEL repository="https://github.com/peter-evans/dockerhub-description"
-LABEL homepage="https://github.com/peter-evans/dockerhub-description"
-
-LABEL com.github.actions.name="Docker Hub Description"
-LABEL com.github.actions.description="An action to update a Docker Hub repository description from README.md"
-LABEL com.github.actions.icon="upload"
-LABEL com.github.actions.color="blue"
+LABEL \
+  maintainer="Peter Evans <mail@peterevans.dev>" \
+  org.opencontainers.image.title="dockerhub-description" \
+  org.opencontainers.image.description="An action to update a Docker Hub repository description from README.md" \
+  org.opencontainers.image.authors="Peter Evans <mail@peterevans.dev>" \
+  org.opencontainers.image.url="https://github.com/peter-evans/dockerhub-description" \
+  org.opencontainers.image.vendor="https://peterevans.dev" \
+  org.opencontainers.image.licenses="MIT"
 
 COPY LICENSE README.md /
+
+COPY dist/index.js /index.js
 
 COPY entrypoint.sh /entrypoint.sh
 

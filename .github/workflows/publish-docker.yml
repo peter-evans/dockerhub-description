@@ -1,0 +1,41 @@
+name: Publish Docker Image
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+env:
+  IMAGE_NAME: peterevans/dockerhub-description
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker Hub login
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Push image to Docker Hub
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          # Build and tag image
+          docker build . --file Dockerfile --tag $IMAGE_NAME --label "org.opencontainers.image.version=$VERSION"
+          docker tag $IMAGE_NAME $IMAGE_NAME:$VERSION
+
+          # Tag with the minor version if valid
+          MINOR_VERSION=$(echo $VERSION | sed -n "s/^\([0-9]*.[0-9]*\).[0-9]*$/\1/p")
+          [[ ${#MINOR_VERSION} -gt 0 ]] && docker tag $IMAGE_NAME $IMAGE_NAME:$MINOR_VERSION
+          # Tag with the major version if valid
+          MAJOR_VERSION=$(echo $VERSION | sed -n "s/^\([0-9]*\).[0-9]*.[0-9]*$/\1/p")
+          [[ ${#MAJOR_VERSION} -gt 0 ]] && docker tag $IMAGE_NAME $IMAGE_NAME:$MAJOR_VERSION
+
+          docker push $IMAGE_NAME
