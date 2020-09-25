@@ -59,15 +59,15 @@ jobs:
           mkdir -p some/path
           cp README.md some/path/TEST.md
 
-      - name: Docker Hub Description
+      - name: Docker Hub Description (with)
         uses: ./
         with:
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerhub-repository: peterevans/dd-ci-fixture-${{ matrix.target }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: peterevans/dd-ci-fixture-${{ matrix.target }}
           readme-filepath: ./some/path/TEST.md
 
-      - name: Docker Hub Description
+      - name: Docker Hub Description (env)
         uses: ./
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
