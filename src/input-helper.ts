@@ -39,9 +39,6 @@ export function getInputs(): Inputs {
   if (!inputs.repository && process.env['DOCKER_REPOSITORY']) {
     inputs.repository = process.env['DOCKER_REPOSITORY']
   }
-  if (!inputs.repository && process.env['GITHUB_REPOSITORY']) {
-    inputs.repository = process.env['GITHUB_REPOSITORY']
-  }
 
   if (!inputs.readmeFilepath && process.env['README_FILEPATH']) {
     inputs.readmeFilepath = process.env['README_FILEPATH']
@@ -50,6 +47,9 @@ export function getInputs(): Inputs {
   // Set defaults
   if (!inputs.readmeFilepath) {
     inputs.readmeFilepath = README_FILEPATH_DEFAULT
+  }
+  if (!inputs.repository && process.env['GITHUB_REPOSITORY']) {
+    inputs.repository = process.env['GITHUB_REPOSITORY']
   }
 
   return inputs
