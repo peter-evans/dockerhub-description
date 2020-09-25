@@ -25,6 +25,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 | `username` | (**required**) Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. | |
 | `password` | (**required**) Docker Hub password. | |
 | `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
+| `short-description` | Docker Hub repository short description. Input exceeding 100 characters will be truncated. | |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
 
 #### Specifying the file path

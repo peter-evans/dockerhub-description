@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateRepositoryDescription = exports.getToken = void 0;
 const core = __importStar(__webpack_require__(186));
 const fetch = __importStar(__webpack_require__(467));
+const DESCRIPTION_MAX_CHARS = 100;
 function getToken(username, password) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = {
@@ -56,11 +57,14 @@ function getToken(username, password) {
     });
 }
 exports.getToken = getToken;
-function updateRepositoryDescription(token, repository, fullDescription) {
+function updateRepositoryDescription(token, repository, description, fullDescription) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = {
             full_description: fullDescription
         };
+        if (description) {
+            body['description'] = description.slice(0, DESCRIPTION_MAX_CHARS);
+        }
         yield fetch(`https://hub.docker.com/v2/repositories/${repository}`, {
             method: 'patch',
             body: JSON.stringify(body),
@@ -109,6 +113,7 @@ function getInputs() {
         username: core.getInput('username'),
         password: core.getInput('password'),
         repository: core.getInput('repository'),
+        shortDescription: core.getInput('short-description'),
         readmeFilepath: core.getInput('readme-filepath')
     };
     // Environment variable input alternatives and their aliases
@@ -129,6 +134,9 @@ function getInputs() {
     }
     if (!inputs.repository && process.env['DOCKER_REPOSITORY']) {
         inputs.repository = process.env['DOCKER_REPOSITORY'];
+    }
+    if (!inputs.shortDescription && process.env['SHORT_DESCRIPTION']) {
+        inputs.shortDescription = process.env['SHORT_DESCRIPTION'];
     }
     if (!inputs.readmeFilepath && process.env['README_FILEPATH']) {
         inputs.readmeFilepath = process.env['README_FILEPATH'];
@@ -151,7 +159,6 @@ function checkRequiredInput(input, name) {
 function validateInputs(inputs) {
     checkRequiredInput(inputs.username, 'username');
     checkRequiredInput(inputs.password, 'password');
-    checkRequiredInput(inputs.repository, 'repository');
 }
 exports.validateInputs = validateInputs;
 
@@ -217,7 +224,7 @@ function run() {
             const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);
             // Send a PATCH request to update the description of the repository
             core.info('Sending PATCH request');
-            yield dockerhubHelper.updateRepositoryDescription(token, inputs.repository, readmeContent);
+            yield dockerhubHelper.updateRepositoryDescription(token, inputs.repository, inputs.shortDescription, readmeContent);
             core.info('Request successful');
         }
         catch (error) {

@@ -35,6 +35,7 @@ async function run(): Promise<void> {
     await dockerhubHelper.updateRepositoryDescription(
       token,
       inputs.repository,
+      inputs.shortDescription,
       readmeContent
     )
     core.info('Request successful')

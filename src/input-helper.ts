@@ -6,6 +6,7 @@ interface Inputs {
   username: string
   password: string
   repository: string
+  shortDescription: string
   readmeFilepath: string
 }
 
@@ -14,6 +15,7 @@ export function getInputs(): Inputs {
     username: core.getInput('username'),
     password: core.getInput('password'),
     repository: core.getInput('repository'),
+    shortDescription: core.getInput('short-description'),
     readmeFilepath: core.getInput('readme-filepath')
   }
 
@@ -40,6 +42,10 @@ export function getInputs(): Inputs {
     inputs.repository = process.env['DOCKER_REPOSITORY']
   }
 
+  if (!inputs.shortDescription && process.env['SHORT_DESCRIPTION']) {
+    inputs.shortDescription = process.env['SHORT_DESCRIPTION']
+  }
+
   if (!inputs.readmeFilepath && process.env['README_FILEPATH']) {
     inputs.readmeFilepath = process.env['README_FILEPATH']
   }
@@ -64,5 +70,4 @@ function checkRequiredInput(input: string, name: string): void {
 export function validateInputs(inputs: Inputs): void {
   checkRequiredInput(inputs.username, 'username')
   checkRequiredInput(inputs.password, 'password')
-  checkRequiredInput(inputs.repository, 'repository')
 }
