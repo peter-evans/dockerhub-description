@@ -23,11 +23,11 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 | Name | Description | Default |
 | --- | --- | --- |
 | `username` | (**required**) Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. | |
-| `password` | (**required**) Docker Hub password | |
-| `repository` | (**required**) Docker Hub repository in the format `<namespace>/<name>` | |
+| `password` | (**required**) Docker Hub password. | |
+| `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
 
-#### Optionally specifying the file path
+#### Specifying the file path
 
 The action assumes that there is a file called `README.md` located at the root of the repository.
 If this is not the case the path can be specified with the `readme-filepath` input.

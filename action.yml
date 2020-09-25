@@ -9,10 +9,13 @@ inputs:
     description: Docker Hub password
     required: true
   repository:
-    description: Docker Hub repository in the format `<namespace>/<name>`
-    required: true
+    description: >
+      Docker Hub repository in the format `<namespace>/<name>`
+      Default: `github.repository`
   readme-filepath:
-    description: Path to the repository readme. Defaults to `./README.md`.
+    description: >
+      Path to the repository readme
+      Default: `./README.md`
 runs:
   using: 'node12'
   main: 'dist/index.js'
