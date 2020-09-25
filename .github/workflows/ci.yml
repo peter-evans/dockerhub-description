@@ -65,6 +65,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: peterevans/dd-ci-fixture-${{ matrix.target }}
+          short-description: ${{ matrix.target }} test fixture for dockerhub-description action
           readme-filepath: ./some/path/TEST.md
 
       - name: Docker Hub Description (env)
