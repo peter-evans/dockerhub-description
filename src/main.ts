@@ -27,14 +27,14 @@ async function run(): Promise<void> {
     // Acquire a token for the Docker Hub API
     core.info('Acquiring token')
     const token = await dockerhubHelper.getToken(
-      inputs.dockerhubUsername,
-      inputs.dockerhubPassword
+      inputs.username,
+      inputs.password
     )
     // Send a PATCH request to update the description of the repository
     core.info('Sending PATCH request')
     await dockerhubHelper.updateRepositoryDescription(
       token,
-      inputs.dockerhubRepository,
+      inputs.repository,
       readmeContent
     )
     core.info('Request successful')

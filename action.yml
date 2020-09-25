@@ -2,14 +2,14 @@ name: 'Docker Hub Description'
 author: 'Peter Evans'
 description: 'An action to update a Docker Hub repository description from README.md'
 inputs:
-  dockerhub-username:
+  username:
     description: Docker Hub username
     required: true
-  dockerhub-password:
+  password:
     description: Docker Hub password
     required: true
-  dockerhub-repository:
-    description: Docker Hub repository to update in the format `<namespace>/<name>`
+  repository:
+    description: Docker Hub repository in the format `<namespace>/<name>`
     required: true
   readme-filepath:
     description: Path to the repository readme. Defaults to `./README.md`.

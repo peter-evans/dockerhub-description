@@ -106,32 +106,32 @@ const core = __importStar(__webpack_require__(186));
 const README_FILEPATH_DEFAULT = './README.md';
 function getInputs() {
     const inputs = {
-        dockerhubUsername: core.getInput('dockerhub-username'),
-        dockerhubPassword: core.getInput('dockerhub-password'),
-        dockerhubRepository: core.getInput('dockerhub-repository'),
+        username: core.getInput('username'),
+        password: core.getInput('password'),
+        repository: core.getInput('repository'),
         readmeFilepath: core.getInput('readme-filepath')
     };
     // Environment variable input alternatives and their aliases
-    if (!inputs.dockerhubUsername && process.env['DOCKERHUB_USERNAME']) {
-        inputs.dockerhubUsername = process.env['DOCKERHUB_USERNAME'];
+    if (!inputs.username && process.env['DOCKERHUB_USERNAME']) {
+        inputs.username = process.env['DOCKERHUB_USERNAME'];
     }
-    if (!inputs.dockerhubUsername && process.env['DOCKER_USERNAME']) {
-        inputs.dockerhubUsername = process.env['DOCKER_USERNAME'];
+    if (!inputs.username && process.env['DOCKER_USERNAME']) {
+        inputs.username = process.env['DOCKER_USERNAME'];
     }
-    if (!inputs.dockerhubPassword && process.env['DOCKERHUB_PASSWORD']) {
-        inputs.dockerhubPassword = process.env['DOCKERHUB_PASSWORD'];
+    if (!inputs.password && process.env['DOCKERHUB_PASSWORD']) {
+        inputs.password = process.env['DOCKERHUB_PASSWORD'];
     }
-    if (!inputs.dockerhubPassword && process.env['DOCKER_PASSWORD']) {
-        inputs.dockerhubPassword = process.env['DOCKER_PASSWORD'];
+    if (!inputs.password && process.env['DOCKER_PASSWORD']) {
+        inputs.password = process.env['DOCKER_PASSWORD'];
     }
-    if (!inputs.dockerhubRepository && process.env['DOCKERHUB_REPOSITORY']) {
-        inputs.dockerhubRepository = process.env['DOCKERHUB_REPOSITORY'];
+    if (!inputs.repository && process.env['DOCKERHUB_REPOSITORY']) {
+        inputs.repository = process.env['DOCKERHUB_REPOSITORY'];
     }
-    if (!inputs.dockerhubRepository && process.env['DOCKER_REPOSITORY']) {
-        inputs.dockerhubRepository = process.env['DOCKER_REPOSITORY'];
+    if (!inputs.repository && process.env['DOCKER_REPOSITORY']) {
+        inputs.repository = process.env['DOCKER_REPOSITORY'];
     }
-    if (!inputs.dockerhubRepository && process.env['GITHUB_REPOSITORY']) {
-        inputs.dockerhubRepository = process.env['GITHUB_REPOSITORY'];
+    if (!inputs.repository && process.env['GITHUB_REPOSITORY']) {
+        inputs.repository = process.env['GITHUB_REPOSITORY'];
     }
     if (!inputs.readmeFilepath && process.env['README_FILEPATH']) {
         inputs.readmeFilepath = process.env['README_FILEPATH'];
@@ -149,9 +149,9 @@ function checkRequiredInput(input, name) {
     }
 }
 function validateInputs(inputs) {
-    checkRequiredInput(inputs.dockerhubUsername, 'dockerhub-username');
-    checkRequiredInput(inputs.dockerhubPassword, 'dockerhub-password');
-    checkRequiredInput(inputs.dockerhubRepository, 'dockerhub-repository');
+    checkRequiredInput(inputs.username, 'username');
+    checkRequiredInput(inputs.password, 'password');
+    checkRequiredInput(inputs.repository, 'repository');
 }
 exports.validateInputs = validateInputs;
 
@@ -214,10 +214,10 @@ function run() {
             }
             // Acquire a token for the Docker Hub API
             core.info('Acquiring token');
-            const token = yield dockerhubHelper.getToken(inputs.dockerhubUsername, inputs.dockerhubPassword);
+            const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);
             // Send a PATCH request to update the description of the repository
             core.info('Sending PATCH request');
-            yield dockerhubHelper.updateRepositoryDescription(token, inputs.dockerhubRepository, readmeContent);
+            yield dockerhubHelper.updateRepositoryDescription(token, inputs.repository, readmeContent);
             core.info('Request successful');
         }
         catch (error) {
