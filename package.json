@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/peter-evans/dockerhub-description#readme",
   "dependencies": {
-    "@actions/core": "1.2.5",
+    "@actions/core": "1.2.6",
     "node-fetch": "2.6.1"
   },
   "devDependencies": {
