@@ -40,5 +40,9 @@ export async function updateRepositoryDescription(
       'Content-Type': 'application/json',
       Authorization: `JWT ${token}`
     }
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error(res.statusText)
+    }
   })
 }
