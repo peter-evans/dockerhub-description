@@ -152,6 +152,8 @@ function getInputs() {
     if (!inputs.repository && process.env['GITHUB_REPOSITORY']) {
         inputs.repository = process.env['GITHUB_REPOSITORY'];
     }
+    // Docker repositories must be all lower case
+    inputs.repository = inputs.repository.toLowerCase();
     return inputs;
 }
 exports.getInputs = getInputs;
