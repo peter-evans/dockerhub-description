@@ -43,6 +43,20 @@ If this is not the case the path can be specified with the `readme-filepath` inp
         readme-filepath: ./path/to/README.md
 ```
 
+#### Using the GitHub repository description
+
+The GitHub repository description can be used for the Docker Hub `short-descripton` by passing the description from the event context.
+
+```yml
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: peterevans/dockerhub-description
+        short-description: ${{ github.event.repository.description }}
+```
+
 ### Examples
 
 The following workflow updates the Docker Hub repository description whenever there are changes to `README.md` and the workflow file itself on the `master` branch. This workflow assumes its location to be `.github/workflows/dockerhub-description.yml`.
@@ -68,6 +82,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: peterevans/dockerhub-description
+        short-description: ${{ github.event.repository.description }}
 ```
 
 Updates the Docker Hub repository description whenever a new release is created.
@@ -87,6 +102,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: peterevans/dockerhub-description
+        short-description: ${{ github.event.repository.description }}
 ```
 
 ## Using the Docker image independently of GitHub Actions
