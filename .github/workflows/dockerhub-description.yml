@@ -24,3 +24,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: peterevans/dockerhub-description
+          short-description: ${{ github.event.repository.description }}
