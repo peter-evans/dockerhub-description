@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
     paths:
       - README.md
       - .github/workflows/dockerhub-description.yml
@@ -16,7 +16,7 @@ jobs:
       - name: Modify readme for DockerHub
         run: |
           sed -i 's/# Docker Hub Description/# [Docker Hub Description](https:\/\/github.com\/peter-evans\/dockerhub-description)/' README.md
-          sed -i 's/(LICENSE)/(https:\/\/github.com\/peter-evans\/dockerhub-description\/blob\/master\/LICENSE)/' README.md
+          sed -i 's/(LICENSE)/(https:\/\/github.com\/peter-evans\/dockerhub-description\/blob\/main\/LICENSE)/' README.md
 
       - name: Docker Hub Description
         uses: ./
