@@ -16,6 +16,11 @@ export async function getToken(
     body: JSON.stringify(body),
     headers: {'Content-Type': 'application/json'}
   })
+  if (!response.ok) {
+    throw new Error(
+      `Unexpected response: ${response.status} ${response.statusText}`
+    )
+  }
   const json = await response.json()
   core.setSecret(json['token'])
   return json['token']
