@@ -39,7 +39,7 @@ async function run(): Promise<void> {
       readmeContent
     )
     core.info('Request successful')
-  } catch (error) {
+  } catch (error: any) {
     core.debug(inspect(error))
     core.setFailed(error.message)
   }
