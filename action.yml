@@ -21,7 +21,7 @@ inputs:
       Path to the repository readme
       Default: `./README.md`
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 branding:
   icon: 'upload'
