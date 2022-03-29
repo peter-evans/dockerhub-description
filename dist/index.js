@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateRepositoryDescription = exports.getToken = void 0;
+exports.createRepositoryIfNeeded = exports.updateRepositoryDescription = exports.getToken = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const fetch = __importStar(__nccwpck_require__(467));
 const DESCRIPTION_MAX_CHARS = 100;
@@ -82,6 +82,42 @@ function updateRepositoryDescription(token, repository, description, fullDescrip
     });
 }
 exports.updateRepositoryDescription = updateRepositoryDescription;
+function createRepositoryIfNeeded(token, repository, is_private) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(`https://hub.docker.com/v2/repositories/${repository}`, {
+            method: 'head',
+            headers: {
+                Authorization: `JWT ${token}`
+            }
+        });
+        if (response.status == 404) {
+            core.info('Create Dockerhub repository with private flag: ' + is_private);
+            const [dh_namespace, dh_name] = repository.split('/');
+            const dh_body = {
+                namespace: dh_namespace,
+                name: dh_name,
+                is_private: is_private
+            };
+            const create_resp = yield fetch(`https://hub.docker.com/v2/repositories/`, {
+                method: 'post',
+                body: JSON.stringify(dh_body),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `JWT ${token}`
+                }
+            });
+            if (!create_resp.ok) {
+                const create_status = create_resp.statusText;
+                const create_json = yield create_resp.json();
+                throw new Error(create_status + ' - ' + JSON.stringify(create_json));
+            }
+        }
+        else {
+            core.info('Dockerhub repository is already there, go ahead...');
+        }
+    });
+}
+exports.createRepositoryIfNeeded = createRepositoryIfNeeded;
 
 
 /***/ }),
@@ -119,6 +155,8 @@ function getInputs() {
         username: core.getInput('username'),
         password: core.getInput('password'),
         repository: core.getInput('repository'),
+        is_created: core.getBooleanInput('create-repository'),
+        is_private: core.getBooleanInput('create-asprivate'),
         shortDescription: core.getInput('short-description'),
         readmeFilepath: core.getInput('readme-filepath')
     };
@@ -230,6 +268,11 @@ function run() {
             // Acquire a token for the Docker Hub API
             core.info('Acquiring token');
             const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);
+            // Make sure repository is there
+            if (inputs.is_created) {
+                core.info('Checking DockerHub repository');
+                yield dockerhubHelper.createRepositoryIfNeeded(token, inputs.repository, inputs.is_private);
+            }
             // Send a PATCH request to update the description of the repository
             core.info('Sending PATCH request');
             yield dockerhubHelper.updateRepositoryDescription(token, inputs.repository, inputs.shortDescription, readmeContent);

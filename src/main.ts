@@ -30,6 +30,15 @@ async function run(): Promise<void> {
       inputs.username,
       inputs.password
     )
+    // Make sure repository is there
+    if (inputs.is_created) {
+      core.info('Checking DockerHub repository')
+      await dockerhubHelper.createRepositoryIfNeeded(
+        token,
+        inputs.repository,
+        inputs.is_private
+      )
+    }
     // Send a PATCH request to update the description of the repository
     core.info('Sending PATCH request')
     await dockerhubHelper.updateRepositoryDescription(

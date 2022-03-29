@@ -6,6 +6,8 @@ interface Inputs {
   username: string
   password: string
   repository: string
+  is_created: boolean
+  is_private: boolean
   shortDescription: string
   readmeFilepath: string
 }
@@ -15,6 +17,8 @@ export function getInputs(): Inputs {
     username: core.getInput('username'),
     password: core.getInput('password'),
     repository: core.getInput('repository'),
+    is_created: core.getBooleanInput('create-repository'),
+    is_private: core.getBooleanInput('create-asprivate'),
     shortDescription: core.getInput('short-description'),
     readmeFilepath: core.getInput('readme-filepath')
   }
