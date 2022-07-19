@@ -18,12 +18,10 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 ### Action inputs
 
-**Note**: Docker Hub [Personal Access Tokens](https://docs.docker.com/docker-hub/access-tokens/) cannot be used as they are not supported by the API. See [here](https://github.com/docker/hub-feedback/issues/1927) and [here](https://github.com/docker/hub-feedback/issues/1914) for further details. Unfortunately, this means that enabling 2FA on Docker Hub will prevent the action from working.
-
 | Name | Description | Default |
 | --- | --- | --- |
 | `username` | (**required**) Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. | |
-| `password` | (**required**) Docker Hub password. | |
+| `password` | (**required**) Docker Hub password or [Personal Access Token](https://docs.docker.com/docker-hub/access-tokens/). | |
 | `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
 | `short-description` | Docker Hub repository short description. Input exceeding 100 characters will be truncated. | |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
