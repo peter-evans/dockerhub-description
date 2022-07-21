@@ -6,7 +6,7 @@ inputs:
     description: Docker Hub username
     required: true
   password:
-    description: Docker Hub password or Personal Access Token
+    description: Docker Hub password or Personal Access Token with read/write/delete scope
     required: true
   repository:
     description: >
