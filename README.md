@@ -23,8 +23,13 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 | `username` | (**required**) Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. | |
 | `password` | (**required**) Docker Hub password or [Personal Access Token](https://docs.docker.com/docker-hub/access-tokens/) with `read/write/delete` scope. | |
 | `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
-| `short-description` | Docker Hub repository short description. Input exceeding 100 characters will be truncated. | |
+| `short-description` | Docker Hub repository short description. | |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
+
+#### Content limits
+
+DockerHub has content limits, which if exceeded will result in the content being automatically truncated.
+The readme content is limited to 25,000 bytes, and `short-description` is limited to 100 characters.
 
 #### Specifying the file path
 
