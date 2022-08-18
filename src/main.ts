@@ -2,9 +2,7 @@ import * as core from '@actions/core'
 import * as inputHelper from './input-helper'
 import * as dockerhubHelper from './dockerhub-helper'
 import * as fs from 'fs'
-import {inspect, TextEncoder} from 'util'
-
-const MAX_BYTES = 25000
+import {inspect} from 'util'
 
 async function run(): Promise<void> {
   try {
@@ -17,12 +15,6 @@ async function run(): Promise<void> {
     const readmeContent = await fs.promises.readFile(inputs.readmeFilepath, {
       encoding: 'utf8'
     })
-    const byteLength = new TextEncoder().encode(readmeContent).length
-    if (byteLength > MAX_BYTES) {
-      throw new Error(
-        `File size exceeds the maximum allowed ${MAX_BYTES} bytes`
-      )
-    }
 
     // Acquire a token for the Docker Hub API
     core.info('Acquiring token')

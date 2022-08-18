@@ -212,7 +212,6 @@ const inputHelper = __importStar(__nccwpck_require__(480));
 const dockerhubHelper = __importStar(__nccwpck_require__(812));
 const fs = __importStar(__nccwpck_require__(147));
 const util_1 = __nccwpck_require__(837);
-const MAX_BYTES = 25000;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -223,10 +222,6 @@ function run() {
             const readmeContent = yield fs.promises.readFile(inputs.readmeFilepath, {
                 encoding: 'utf8'
             });
-            const byteLength = new util_1.TextEncoder().encode(readmeContent).length;
-            if (byteLength > MAX_BYTES) {
-                throw new Error(`File size exceeds the maximum allowed ${MAX_BYTES} bytes`);
-            }
             // Acquire a token for the Docker Hub API
             core.info('Acquiring token');
             const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);

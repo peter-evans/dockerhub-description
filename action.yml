@@ -13,9 +13,7 @@ inputs:
       Docker Hub repository in the format `<namespace>/<name>`
       Default: `github.repository`
   short-description:
-    description: >
-      Docker Hub repository short description
-      Input exceeding 100 characters will be truncated
+    description: Docker Hub repository short description
   readme-filepath:
     description: >
       Path to the repository readme
