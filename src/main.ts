@@ -4,6 +4,11 @@ import * as dockerhubHelper from './dockerhub-helper'
 import * as fs from 'fs'
 import {inspect} from 'util'
 
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message
+  return String(error)
+}
+
 async function run(): Promise<void> {
   try {
     const inputs = inputHelper.getInputs()
@@ -31,9 +36,9 @@ async function run(): Promise<void> {
       readmeContent
     )
     core.info('Request successful')
-  } catch (error: any) {
+  } catch (error) {
     core.debug(inspect(error))
-    core.setFailed(error.message)
+    core.setFailed(getErrorMessage(error))
   }
 }
 

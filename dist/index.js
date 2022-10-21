@@ -212,6 +212,11 @@ const inputHelper = __importStar(__nccwpck_require__(5480));
 const dockerhubHelper = __importStar(__nccwpck_require__(1812));
 const fs = __importStar(__nccwpck_require__(7147));
 const util_1 = __nccwpck_require__(3837);
+function getErrorMessage(error) {
+    if (error instanceof Error)
+        return error.message;
+    return String(error);
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -232,7 +237,7 @@ function run() {
         }
         catch (error) {
             core.debug((0, util_1.inspect)(error));
-            core.setFailed(error.message);
+            core.setFailed(getErrorMessage(error));
         }
     });
 }
