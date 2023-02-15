@@ -6,7 +6,7 @@ on:
     tags:
       - v*
 env:
-  IMAGE_NAME: peterevans/dockerhub-description
+  IMAGE_NAME: paritytech/dockerhub-description
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -28,7 +28,7 @@ jobs:
           [ "$VERSION" == "main" ] && VERSION=latest
 
           # Build and tag image
-          docker build . --file Dockerfile --tag $IMAGE_NAME --label "org.opencontainers.image.version=$VERSION"
+          docker build . --file Dockerfile --tag $IMAGE_NAME --label "io.parity.image.version=$VERSION"
           docker tag $IMAGE_NAME $IMAGE_NAME:$VERSION
 
           # Tag with the minor version if valid
