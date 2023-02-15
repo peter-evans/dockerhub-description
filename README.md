@@ -125,6 +125,25 @@ docker run -v $PWD:/workspace \
   paritytech-stg/dockerhub-description:3
 ```
 
+## Using with the GitLab CI
+
+```bash
+stages:
+  - publish description
+
+publish dockerhub description:
+  stage: publish description
+  image: paritytech/dockerhub-description:latest
+  variables:
+    DOCKERHUB_REPOSITORY: $TARGET_DOCKER_REPOSITORY
+    DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
+    DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
+    SHORT_DESCRIPTION: 'MY SHORT DESCRIPTION'
+    README_FILEPATH: $CI_PROJECT_DIR/$PATH_TO_README.md
+  script:
+    - echo # Dummy command to satisfy GitLab CI linter
+```
+
 ## License
 
 [MIT](LICENSE)
