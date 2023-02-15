@@ -1,12 +1,19 @@
 FROM node:12-alpine
 
+# metadata
+ARG VCS_REF
+ARG BUILD_DATE
+ARG IMAGE_NAME
+
 LABEL \
-  maintainer="Peter Evans <mail@peterevans.dev>" \
-  org.opencontainers.image.title="dockerhub-description" \
-  org.opencontainers.image.description="An action to update a Docker Hub repository description from README.md" \
-  org.opencontainers.image.authors="Peter Evans <mail@peterevans.dev>" \
-  org.opencontainers.image.url="https://github.com/peter-evans/dockerhub-description" \
-  org.opencontainers.image.vendor="https://peterevans.dev" \
+  maintainer="devops-team@parity.io" \
+  io.parity.image.title="${IMAGE_NAME}" \
+  io.parity.image.description="An action to update a Docker Hub repository description from README.md" \
+  io.parity.image.authors="devops-team@parity.io" \
+  io.parity.image.source="https://github.com/paritytech-stg/dockerhub-description/blob/main/Dockerfile" \
+  io.parity.image.vendor="Parity Technologies" \
+  io.parity.image.revision="${VCS_REF}" \
+  io.parity.image.created="${BUILD_DATE}" \
   org.opencontainers.image.licenses="MIT"
 
 COPY LICENSE README.md /

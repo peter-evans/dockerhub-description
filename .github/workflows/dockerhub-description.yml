@@ -15,7 +15,7 @@ jobs:
 
       - name: Modify readme for DockerHub
         run: |
-          sed -i 's/# Docker Hub Description/# [Docker Hub Description](https:\/\/github.com\/peter-evans\/dockerhub-description)/' README.md
+          sed -i 's/# Docker Hub Description/# [Docker Hub Description](https:\/\/github.com\/paritytech-stg\/dockerhub-description)/' README.md
           sed -i 's/(LICENSE)/(https:\/\/github.com\/peter-evans\/dockerhub-description\/blob\/main\/LICENSE)/' README.md
 
       - name: Docker Hub Description
@@ -23,5 +23,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: peterevans/dockerhub-description
+          repository: paritytech/dockerhub-description
           short-description: ${{ github.event.repository.description }}

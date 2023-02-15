@@ -1,4 +1,7 @@
 # Docker Hub Description
+
+### Fork from https://github.com/peter-evans/dockerhub-description
+
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Docker%20Hub%20Description-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAM6wAADOsB5dZE0gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAERSURBVCiRhZG/SsMxFEZPfsVJ61jbxaF0cRQRcRJ9hlYn30IHN/+9iquDCOIsblIrOjqKgy5aKoJQj4O3EEtbPwhJbr6Te28CmdSKeqzeqr0YbfVIrTBKakvtOl5dtTkK+v4HfA9PEyBFCY9AGVgCBLaBp1jPAyfAJ/AAdIEG0dNAiyP7+K1qIfMdonZic6+WJoBJvQlvuwDqcXadUuqPA1NKAlexbRTAIMvMOCjTbMwl1LtI/6KWJ5Q6rT6Ht1MA58AX8Apcqqt5r2qhrgAXQC3CZ6i1+KMd9TRu3MvA3aH/fFPnBodb6oe6HM8+lYHrGdRXW8M9bMZtPXUji69lmf5Cmamq7quNLFZXD9Rq7v0Bpc1o/tp0fisAAAAASUVORK5CYII=)](https://github.com/marketplace/actions/docker-hub-description)
 
 A GitHub action to update a Docker Hub repository description from `README.md`.
@@ -9,11 +12,11 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: paritytech-stg/dockerhub-description@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: peterevans/dockerhub-description
+        repository: paritytech-stg/dockerhub-description
 ```
 
 ### Action inputs
@@ -38,11 +41,11 @@ If this is not the case the path can be specified with the `readme-filepath` inp
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: paritytech-stg/dockerhub-description@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: peterevans/dockerhub-description
+        repository: paritytech-stg/dockerhub-description
         readme-filepath: ./path/to/README.md
 ```
 
@@ -52,11 +55,11 @@ The GitHub repository description can be used for the Docker Hub `short-descript
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: paritytech-stg/dockerhub-description@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: peterevans/dockerhub-description
+        repository: paritytech-stg/dockerhub-description
         short-description: ${{ github.event.repository.description }}
 ```
 
@@ -80,11 +83,11 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: paritytech-stg/dockerhub-description@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: peterevans/dockerhub-description
+        repository: paritytech-stg/dockerhub-description
         short-description: ${{ github.event.repository.description }}
 ```
 
@@ -100,11 +103,11 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: paritytech-stg/dockerhub-description@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: peterevans/dockerhub-description
+        repository: paritytech-stg/dockerhub-description
         short-description: ${{ github.event.repository.description }}
 ```
 
@@ -119,7 +122,7 @@ docker run -v $PWD:/workspace \
   -e DOCKERHUB_PASSWORD='xxxxx' \
   -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
   -e README_FILEPATH='/workspace/README.md' \
-  peterevans/dockerhub-description:3
+  paritytech-stg/dockerhub-description:3
 ```
 
 ## License

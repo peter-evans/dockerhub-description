@@ -1,106 +1,106 @@
-name: CI
-on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
-  pull_request:
-    branches: [main]
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
+# name: CI
+# on:
+#   push:
+#     branches: [main]
+#     paths-ignore:
+#       - 'README.md'
+#       - 'docs/**'
+#   pull_request:
+#     branches: [main]
+#     paths-ignore:
+#       - 'README.md'
+#       - 'docs/**'
 
-permissions:
-  pull-requests: write
-  contents: write
+# permissions:
+#   pull-requests: write
+#   contents: write
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: npm run format-check
-      - run: npm run lint
-      - run: npm run test
-      - uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: action.yml
-          path: action.yml
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: 16.x
+#           cache: npm
+#       - run: npm ci
+#       - run: npm run build
+#       - run: npm run format-check
+#       - run: npm run lint
+#       - run: npm run test
+#       - uses: actions/upload-artifact@v3
+#         with:
+#           name: dist
+#           path: dist
+#       - uses: actions/upload-artifact@v3
+#         with:
+#           name: action.yml
+#           path: action.yml
 
-  test:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
-    needs: [build]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        target: [built, committed]
-    steps:
-      - uses: actions/checkout@v3
-      - if: matrix.target == 'built' || github.event_name == 'pull_request'
-        uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-      - if: matrix.target == 'built' || github.event_name == 'pull_request'
-        uses: actions/download-artifact@v3
-        with:
-          name: action.yml
-          path: .
+  # test:
+  #   if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       target: [built, committed]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - if: matrix.target == 'built' || github.event_name == 'pull_request'
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: dist
+  #         path: dist
+  #     - if: matrix.target == 'built' || github.event_name == 'pull_request'
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: action.yml
+  #         path: .
 
-      # Tests
+  #     # Tests
 
-      - name: Prepare non-default filepath
-        run: |
-          mkdir -p some/path
-          cp README.md some/path/TEST.md
+  #     - name: Prepare non-default filepath
+  #       run: |
+  #         mkdir -p some/path
+  #         cp README.md some/path/TEST.md
 
-      - name: Docker Hub Description (with)
-        uses: ./
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: peterevans/dd-ci-fixture-${{ matrix.target }}
-          short-description: ${{ matrix.target }} test fixture for dockerhub-description action
-          readme-filepath: ./some/path/TEST.md
+  #     - name: Docker Hub Description (with)
+  #       uses: ./
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #         repository: peterevans/dd-ci-fixture-${{ matrix.target }}
+  #         short-description: ${{ matrix.target }} test fixture for dockerhub-description action
+  #         readme-filepath: ./some/path/TEST.md
 
-      - name: Docker Hub Description (env)
-        uses: ./
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-          DOCKERHUB_REPOSITORY: peterevans/dd-ci-fixture-${{ matrix.target }}
+  #     - name: Docker Hub Description (env)
+  #       uses: ./
+  #       env:
+  #         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #         DOCKERHUB_REPOSITORY: peterevans/dd-ci-fixture-${{ matrix.target }}
 
-  package:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.ACTIONS_BOT_TOKEN }}
-          commit-message: 'build: update distribution'
-          title: Update distribution
-          body: |
-            - Updates the distribution for changes on `main`
+  # package:
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   needs: [test]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: dist
+  #         path: dist
+  #     - name: Create Pull Request
+  #       uses: peter-evans/create-pull-request@v4
+  #       with:
+  #         token: ${{ secrets.ACTIONS_BOT_TOKEN }}
+  #         commit-message: 'build: update distribution'
+  #         title: Update distribution
+  #         body: |
+  #           - Updates the distribution for changes on `main`
 
-            Auto-generated by [create-pull-request][1]
+  #           Auto-generated by [create-pull-request][1]
 
-            [1]: https://github.com/peter-evans/create-pull-request
-          branch: update-distribution
+  #           [1]: https://github.com/peter-evans/create-pull-request
+  #         branch: update-distribution
