@@ -25,6 +25,8 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 | `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
 | `short-description` | Docker Hub repository short description. | |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
+| `enable-url-completion` | Enables completion of relative URLs to absolute ones. See also [Known Issues](#known-issues). | `false` |
+| `image-extensions` | File extensions that will be treated as images. | `bmp,gif,jpg,jpeg,png,svg,webp` |
 
 #### Content limits
 
@@ -86,6 +88,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: peterevans/dockerhub-description
         short-description: ${{ github.event.repository.description }}
+        enable-url-completion: true
 ```
 
 Updates the Docker Hub repository description whenever a new release is created.
@@ -121,6 +124,38 @@ docker run -v $PWD:/workspace \
   -e README_FILEPATH='/workspace/README.md' \
   peterevans/dockerhub-description:3
 ```
+
+## Known Issues
+
+The completion of relative urls has some known issues:
+
+1. Relative markdown links in inline-code and code blocks **are also converted**:
+
+   ```markdown
+   [link in inline code](#table-of-content)
+   ```
+
+   will be converted into
+
+   ```markdown
+   [link in inline code](https://github.com/peter-evans/dockerhub-description/blob/main/./README.md#table-of-content)
+   ```
+
+2. Links containing square brackets (`]`) in the text fragment **are not converted**:
+
+   ```markdown
+   [[link text with square brackets]](#table-of-content)
+   ```
+
+3. [Reference-style links/images](https://www.markdownguide.org/basic-syntax/#reference-style-links) **are not converted**.
+
+   ```markdown
+   [table-of-content][toc]
+
+   ...
+
+   [toc]: #table-of-content "Table of content"
+   ```
 
 ## License
 

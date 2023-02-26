@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import * as inputHelper from './input-helper'
 import * as dockerhubHelper from './dockerhub-helper'
-import * as fs from 'fs'
+import * as readmeHelper from './readme-helper'
 import {inspect} from 'util'
 
 function getErrorMessage(error: unknown) {
@@ -17,9 +17,13 @@ async function run(): Promise<void> {
     inputHelper.validateInputs(inputs)
 
     // Fetch the readme content
-    const readmeContent = await fs.promises.readFile(inputs.readmeFilepath, {
-      encoding: 'utf8'
-    })
+    core.info('Reading description source file')
+    const readmeContent = await readmeHelper.getReadmeContent(
+      inputs.readmeFilepath,
+      inputs.enableUrlCompletion,
+      inputs.imageExtensions
+    )
+    core.debug(readmeContent)
 
     // Acquire a token for the Docker Hub API
     core.info('Acquiring token')
