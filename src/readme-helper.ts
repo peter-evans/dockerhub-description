@@ -35,6 +35,22 @@ export async function getReadmeContent(
     encoding: 'utf8'
   })
 
+  readmeContent = completeRelativeUrls(
+    readmeContent,
+    readmeFilepath,
+    enableUrlCompletion,
+    imageExtensions
+  )
+
+  return readmeContent
+}
+
+export function completeRelativeUrls(
+  readmeContent: string,
+  readmeFilepath: string,
+  enableUrlCompletion: boolean,
+  imageExtensions: string
+): string {
   if (enableUrlCompletion) {
     readmeFilepath = readmeFilepath.replace(/^[.][/]/, '')
 

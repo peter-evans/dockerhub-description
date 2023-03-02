@@ -311,7 +311,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getReadmeContent = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
+exports.completeRelativeUrls = exports.getReadmeContent = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(7147));
 exports.README_FILEPATH_DEFAULT = './README.md';
@@ -327,19 +327,25 @@ function getReadmeContent(readmeFilepath, enableUrlCompletion, imageExtensions) 
         let readmeContent = yield fs.promises.readFile(readmeFilepath, {
             encoding: 'utf8'
         });
-        if (enableUrlCompletion) {
-            // Make relative urls absolute
-            const rules = [
-                ...getRelativeReadmeAnchorsRules(readmeFilepath),
-                ...getRelativeImageUrlRules(imageExtensions),
-                ...getRelativeUrlRules()
-            ];
-            readmeContent = applyRules(rules, readmeContent);
-        }
+        readmeContent = completeRelativeUrls(readmeContent, readmeFilepath, enableUrlCompletion, imageExtensions);
         return readmeContent;
     });
 }
 exports.getReadmeContent = getReadmeContent;
+function completeRelativeUrls(readmeContent, readmeFilepath, enableUrlCompletion, imageExtensions) {
+    if (enableUrlCompletion) {
+        readmeFilepath = readmeFilepath.replace(/^[.][/]/, '');
+        // Make relative urls absolute
+        const rules = [
+            ...getRelativeReadmeAnchorsRules(readmeFilepath),
+            ...getRelativeImageUrlRules(imageExtensions),
+            ...getRelativeUrlRules()
+        ];
+        readmeContent = applyRules(rules, readmeContent);
+    }
+    return readmeContent;
+}
+exports.completeRelativeUrls = completeRelativeUrls;
 function applyRules(rules, readmeContent) {
     rules.forEach(rule => {
         const combinedRegex = `${rule.left.source}[(]${rule.url.source}[)]`;
@@ -352,7 +358,7 @@ function applyRules(rules, readmeContent) {
 }
 // has to be applied first to avoid wrong results
 function getRelativeReadmeAnchorsRules(readmeFilepath) {
-    const prefix = `${BLOB_PREFIX}/${readmeFilepath}`;
+    const prefix = `${BLOB_PREFIX}${readmeFilepath}`;
     // matches e.g.:
     //    #table-of-content
     //    #table-of-content "the anchor (a title)"
