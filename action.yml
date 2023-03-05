@@ -18,6 +18,14 @@ inputs:
     description: >
       Path to the repository readme
       Default: `./README.md`
+  enable-url-completion:
+    description: >
+      Enables completion of relative urls to absolute ones
+      Default: `false`
+  image-extensions:
+    description: >
+      Extensions of files that you be treated as images
+      Default: `bmp,gif,jpg,jpeg,png,svg,webp`
 runs:
   using: 'node16'
   main: 'dist/index.js'

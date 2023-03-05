@@ -1,6 +1,5 @@
 import * as core from '@actions/core'
-
-const README_FILEPATH_DEFAULT = './README.md'
+import * as readmeHelper from './readme-helper'
 
 interface Inputs {
   username: string
@@ -8,6 +7,8 @@ interface Inputs {
   repository: string
   shortDescription: string
   readmeFilepath: string
+  enableUrlCompletion: boolean
+  imageExtensions: string
 }
 
 export function getInputs(): Inputs {
@@ -16,7 +17,9 @@ export function getInputs(): Inputs {
     password: core.getInput('password'),
     repository: core.getInput('repository'),
     shortDescription: core.getInput('short-description'),
-    readmeFilepath: core.getInput('readme-filepath')
+    readmeFilepath: core.getInput('readme-filepath'),
+    enableUrlCompletion: Boolean(core.getInput('enable-url-completion')),
+    imageExtensions: core.getInput('image-extensions')
   }
 
   // Environment variable input alternatives and their aliases
@@ -50,16 +53,31 @@ export function getInputs(): Inputs {
     inputs.readmeFilepath = process.env['README_FILEPATH']
   }
 
+  if (!inputs.enableUrlCompletion && process.env['ENABLE_URL_COMPLETION']) {
+    inputs.enableUrlCompletion = Boolean(process.env['ENABLE_URL_COMPLETION'])
+  }
+
+  if (!inputs.imageExtensions && process.env['IMAGE_EXTENSIONS']) {
+    inputs.imageExtensions = process.env['IMAGE_EXTENSIONS']
+  }
+
   // Set defaults
   if (!inputs.readmeFilepath) {
-    inputs.readmeFilepath = README_FILEPATH_DEFAULT
+    inputs.readmeFilepath = readmeHelper.README_FILEPATH_DEFAULT
+  }
+  if (!inputs.enableUrlCompletion) {
+    inputs.enableUrlCompletion = readmeHelper.ENABLE_URL_COMPLETION_DEFAULT
+  }
+  if (!inputs.imageExtensions) {
+    inputs.imageExtensions = readmeHelper.IMAGE_EXTENSIONS_DEFAULT
   }
   if (!inputs.repository && process.env['GITHUB_REPOSITORY']) {
     inputs.repository = process.env['GITHUB_REPOSITORY']
   }
 
-  // Docker repositories must be all lower case
+  // Enforce lower case, where needed
   inputs.repository = inputs.repository.toLowerCase()
+  inputs.imageExtensions = inputs.imageExtensions.toLowerCase()
 
   return inputs
 }
