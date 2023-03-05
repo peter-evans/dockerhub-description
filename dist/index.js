@@ -121,14 +121,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateInputs = exports.getInputs = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-const README_FILEPATH_DEFAULT = './README.md';
+const readmeHelper = __importStar(__nccwpck_require__(3367));
 function getInputs() {
     const inputs = {
         username: core.getInput('username'),
         password: core.getInput('password'),
         repository: core.getInput('repository'),
         shortDescription: core.getInput('short-description'),
-        readmeFilepath: core.getInput('readme-filepath')
+        readmeFilepath: core.getInput('readme-filepath'),
+        enableUrlCompletion: Boolean(core.getInput('enable-url-completion')),
+        imageExtensions: core.getInput('image-extensions')
     };
     // Environment variable input alternatives and their aliases
     if (!inputs.username && process.env['DOCKERHUB_USERNAME']) {
@@ -155,15 +157,28 @@ function getInputs() {
     if (!inputs.readmeFilepath && process.env['README_FILEPATH']) {
         inputs.readmeFilepath = process.env['README_FILEPATH'];
     }
+    if (!inputs.enableUrlCompletion && process.env['ENABLE_URL_COMPLETION']) {
+        inputs.enableUrlCompletion = Boolean(process.env['ENABLE_URL_COMPLETION']);
+    }
+    if (!inputs.imageExtensions && process.env['IMAGE_EXTENSIONS']) {
+        inputs.imageExtensions = process.env['IMAGE_EXTENSIONS'];
+    }
     // Set defaults
     if (!inputs.readmeFilepath) {
-        inputs.readmeFilepath = README_FILEPATH_DEFAULT;
+        inputs.readmeFilepath = readmeHelper.README_FILEPATH_DEFAULT;
+    }
+    if (!inputs.enableUrlCompletion) {
+        inputs.enableUrlCompletion = readmeHelper.ENABLE_URL_COMPLETION_DEFAULT;
+    }
+    if (!inputs.imageExtensions) {
+        inputs.imageExtensions = readmeHelper.IMAGE_EXTENSIONS_DEFAULT;
     }
     if (!inputs.repository && process.env['GITHUB_REPOSITORY']) {
         inputs.repository = process.env['GITHUB_REPOSITORY'];
     }
-    // Docker repositories must be all lower case
+    // Enforce lower case, where needed
     inputs.repository = inputs.repository.toLowerCase();
+    inputs.imageExtensions = inputs.imageExtensions.toLowerCase();
     return inputs;
 }
 exports.getInputs = getInputs;
@@ -222,7 +237,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const inputHelper = __importStar(__nccwpck_require__(5480));
 const dockerhubHelper = __importStar(__nccwpck_require__(1812));
-const fs = __importStar(__nccwpck_require__(7147));
+const readmeHelper = __importStar(__nccwpck_require__(3367));
 const util_1 = __nccwpck_require__(3837);
 function getErrorMessage(error) {
     if (error instanceof Error)
@@ -236,9 +251,9 @@ function run() {
             core.debug(`Inputs: ${(0, util_1.inspect)(inputs)}`);
             inputHelper.validateInputs(inputs);
             // Fetch the readme content
-            const readmeContent = yield fs.promises.readFile(inputs.readmeFilepath, {
-                encoding: 'utf8'
-            });
+            core.info('Reading description source file');
+            const readmeContent = yield readmeHelper.getReadmeContent(inputs.readmeFilepath, inputs.enableUrlCompletion, inputs.imageExtensions);
+            core.debug(readmeContent);
             // Acquire a token for the Docker Hub API
             core.info('Acquiring token');
             const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);
@@ -254,6 +269,167 @@ function run() {
     });
 }
 run();
+
+
+/***/ }),
+
+/***/ 3367:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.completeRelativeUrls = exports.getReadmeContent = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const fs = __importStar(__nccwpck_require__(7147));
+exports.README_FILEPATH_DEFAULT = './README.md';
+exports.IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp';
+exports.ENABLE_URL_COMPLETION_DEFAULT = false;
+const TITLE_REGEX = `(?: +"[^"]+")?`;
+const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}`;
+const BLOB_PREFIX = `${REPOSITORY_URL}/blob/${process.env['GITHUB_REF_NAME']}/`;
+const RAW_PREFIX = `${REPOSITORY_URL}/raw/${process.env['GITHUB_REF_NAME']}/`;
+function getReadmeContent(readmeFilepath, enableUrlCompletion, imageExtensions) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Fetch the readme content
+        let readmeContent = yield fs.promises.readFile(readmeFilepath, {
+            encoding: 'utf8'
+        });
+        readmeContent = completeRelativeUrls(readmeContent, readmeFilepath, enableUrlCompletion, imageExtensions);
+        return readmeContent;
+    });
+}
+exports.getReadmeContent = getReadmeContent;
+function completeRelativeUrls(readmeContent, readmeFilepath, enableUrlCompletion, imageExtensions) {
+    if (enableUrlCompletion) {
+        readmeFilepath = readmeFilepath.replace(/^[.][/]/, '');
+        // Make relative urls absolute
+        const rules = [
+            ...getRelativeReadmeAnchorsRules(readmeFilepath),
+            ...getRelativeImageUrlRules(imageExtensions),
+            ...getRelativeUrlRules()
+        ];
+        readmeContent = applyRules(rules, readmeContent);
+    }
+    return readmeContent;
+}
+exports.completeRelativeUrls = completeRelativeUrls;
+function applyRules(rules, readmeContent) {
+    rules.forEach(rule => {
+        const combinedRegex = `${rule.left.source}[(]${rule.url.source}[)]`;
+        core.debug(`rule: ${combinedRegex}`);
+        const replacement = `$<left>(${rule.absUrlPrefix}$<url>)`;
+        core.debug(`replacement: ${replacement}`);
+        readmeContent = readmeContent.replace(new RegExp(combinedRegex, 'giu'), replacement);
+    });
+    return readmeContent;
+}
+// has to be applied first to avoid wrong results
+function getRelativeReadmeAnchorsRules(readmeFilepath) {
+    const prefix = `${BLOB_PREFIX}${readmeFilepath}`;
+    // matches e.g.:
+    //    #table-of-content
+    //    #table-of-content "the anchor (a title)"
+    const url = new RegExp(`(?<url>#[^)]+${TITLE_REGEX})`);
+    const rules = [
+        // matches e.g.:
+        //    [#table-of-content](#table-of-content)
+        //    [#table-of-content](#table-of-content "the anchor (a title)")
+        {
+            left: /(?<left>\[[^\]]+\])/,
+            url: url,
+            absUrlPrefix: prefix
+        },
+        // matches e.g.:
+        //    [![media/image.svg](media/image.svg)](#table-of-content)
+        //    [![media/image.svg](media/image.svg "title a")](#table-of-content "title b")
+        {
+            left: /(?<left>\[!\[[^\]]*\]\([^)]+\)\])/,
+            url: url,
+            absUrlPrefix: prefix
+        }
+    ];
+    return rules;
+}
+function getRelativeImageUrlRules(imageExtensions) {
+    const extensionsRegex = imageExtensions.replace(/,/g, '|');
+    // matches e.g.:
+    //    media/image.svg
+    //    media/image.svg "with title"
+    const url = new RegExp(`(?<url>[^:)]+[.](?:${extensionsRegex})${TITLE_REGEX})`);
+    const rules = [
+        // matches e.g.:
+        //    ![media/image.svg](media/image.svg)
+        //    ![media/image.svg](media/image.svg "with title")
+        {
+            left: /(?<left>!\[[^\]]*\])/,
+            url: url,
+            absUrlPrefix: RAW_PREFIX
+        }
+    ];
+    return rules;
+}
+function getRelativeUrlRules() {
+    // matches e.g.:
+    //    .releaserc.yaml
+    //    README.md#table-of-content "title b"
+    //    .releaserc.yaml "the .releaserc.yaml file (a title)"
+    const url = new RegExp(`(?<url>[^:)]+${TITLE_REGEX})`);
+    const rules = [
+        // matches e.g.:
+        //    [.releaserc.yaml](.releaserc.yaml)
+        //    [.releaserc.yaml](.releaserc.yaml "the .releaserc.yaml file (a title)")
+        {
+            left: /(?<left>\[[^\]]+\])/,
+            url: url,
+            absUrlPrefix: BLOB_PREFIX
+        },
+        // matches e.g.:
+        //    [![media/image.svg](media/image.svg)](media/image.svg)
+        //    [![media/image.svg](media/image.svg)](README.md#table-of-content "title b")
+        //    [![media/image.svg](media/image.svg "title a")](media/image.svg)
+        //    [![media/image.svg](media/image.svg "title a")](media/image.svg "title b")
+        //    [![media/image.svg](media/image.svg "title a")](README.md#table-of-content "title b")
+        {
+            left: new RegExp(`(?<left>\\[!\\[[^\\]]*\\]\\([^)]+${TITLE_REGEX}\\)\\])`),
+            url: url,
+            absUrlPrefix: BLOB_PREFIX
+        }
+    ];
+    return rules;
+}
 
 
 /***/ }),
