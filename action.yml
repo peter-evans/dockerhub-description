@@ -20,11 +20,11 @@ inputs:
       Default: `./README.md`
   enable-url-completion:
     description: >
-      Enables completion of relative urls to absolute ones
+      Enables completion of relative URLs to absolute ones
       Default: `false`
   image-extensions:
     description: >
-      Extensions of files that you be treated as images
+      File extensions that will be treated as images
       Default: `bmp,gif,jpg,jpeg,png,svg,webp`
 runs:
   using: 'node16'

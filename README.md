@@ -25,7 +25,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 | `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
 | `short-description` | Docker Hub repository short description. | |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
-| `enable-url-completion` | Enables completion of relative URLs to absolute ones. See also [Known Issues](#known-issues). | `false` |
+| `enable-url-completion` | Enables completion of relative URLs to absolute ones. See also [known Issues](#url-completion-known-issues). | `false` |
 | `image-extensions` | File extensions that will be treated as images. | `bmp,gif,jpg,jpeg,png,svg,webp` |
 
 #### Content limits
@@ -111,23 +111,9 @@ jobs:
         short-description: ${{ github.event.repository.description }}
 ```
 
-## Using the Docker image independently of GitHub Actions
+### URL completion known Issues
 
-The image can be executed in other environments independently of GitHub Actions.
-Simply volume mount the location of the `README.md` file to the container and set environment variables as follows.
-
-```bash
-docker run -v $PWD:/workspace \
-  -e DOCKERHUB_USERNAME='user1' \
-  -e DOCKERHUB_PASSWORD='xxxxx' \
-  -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
-  -e README_FILEPATH='/workspace/README.md' \
-  peterevans/dockerhub-description:3
-```
-
-## Known Issues
-
-The completion of relative urls has some known issues:
+The completion of relative URLs has some known issues:
 
 1. Relative markdown links in inline-code and code blocks **are also converted**:
 
@@ -156,6 +142,20 @@ The completion of relative urls has some known issues:
 
    [toc]: #table-of-content "Table of content"
    ```
+
+## Using the Docker image independently of GitHub Actions
+
+The image can be executed in other environments independently of GitHub Actions.
+Simply volume mount the location of the `README.md` file to the container and set environment variables as follows.
+
+```bash
+docker run -v $PWD:/workspace \
+  -e DOCKERHUB_USERNAME='user1' \
+  -e DOCKERHUB_PASSWORD='xxxxx' \
+  -e DOCKERHUB_REPOSITORY='user1/my-docker-image' \
+  -e README_FILEPATH='/workspace/README.md' \
+  peterevans/dockerhub-description:3
+```
 
 ## License
 
