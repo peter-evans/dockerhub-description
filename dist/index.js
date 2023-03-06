@@ -311,9 +311,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.completeRelativeUrls = exports.getReadmeContent = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
+exports.completeRelativeUrls = exports.getReadmeContent = exports.truncateToBytes = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(7147));
+const unicodeSubstring = __nccwpck_require__(6986);
 exports.README_FILEPATH_DEFAULT = './README.md';
 exports.IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp';
 exports.ENABLE_URL_COMPLETION_DEFAULT = false;
@@ -321,6 +322,15 @@ const TITLE_REGEX = `(?: +"[^"]+")?`;
 const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}`;
 const BLOB_PREFIX = `${REPOSITORY_URL}/blob/${process.env['GITHUB_REF_NAME']}/`;
 const RAW_PREFIX = `${REPOSITORY_URL}/raw/${process.env['GITHUB_REF_NAME']}/`;
+const MAX_BYTES = 25000;
+function truncateToBytes(s, n) {
+    let len = n;
+    while (Buffer.byteLength(s) > n) {
+        s = unicodeSubstring(s, 0, len--);
+    }
+    return s;
+}
+exports.truncateToBytes = truncateToBytes;
 function getReadmeContent(readmeFilepath, enableUrlCompletion, imageExtensions) {
     return __awaiter(this, void 0, void 0, function* () {
         // Fetch the readme content
@@ -328,7 +338,11 @@ function getReadmeContent(readmeFilepath, enableUrlCompletion, imageExtensions) 
             encoding: 'utf8'
         });
         readmeContent = completeRelativeUrls(readmeContent, readmeFilepath, enableUrlCompletion, imageExtensions);
-        return readmeContent;
+        const truncatedReadmeContent = truncateToBytes(readmeContent, MAX_BYTES);
+        if (truncatedReadmeContent.length !== readmeContent.length) {
+            core.warning(`The README content exceeds DockerHub's limit and has been truncated to ${MAX_BYTES} bytes.`);
+        }
+        return truncatedReadmeContent;
     });
 }
 exports.getReadmeContent = getReadmeContent;
@@ -6429,6 +6443,64 @@ if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
 }
 exports.debug = debug; // for test
 
+
+/***/ }),
+
+/***/ 6986:
+/***/ ((module) => {
+
+"use strict";
+
+
+function charAt(string, index) {
+  var first = string.charCodeAt(index);
+  var second;
+  if (first >= 55296 && first <= 56319 && string.length > index + 1) {
+    second = string.charCodeAt(index + 1);
+    if (second >= 56320 && second <= 57343) {
+      return string.substring(index, index + 2);
+    }
+  }
+  return string[index];
+}
+
+function slice(string, start, end) {
+  var accumulator = "";
+  var character;
+  var stringIndex = 0;
+  var unicodeIndex = 0;
+  var length = string.length;
+
+  while (stringIndex < length) {
+    character = charAt(string, stringIndex);
+    if (unicodeIndex >= start && unicodeIndex < end) {
+      accumulator += character;
+    }
+    stringIndex += character.length;
+    unicodeIndex += 1;
+  }
+  return accumulator;
+}
+
+function toNumber(value, fallback) {
+  if (value === undefined) {
+    return fallback;
+  } else {
+    return Number(value);
+  }
+}
+
+module.exports = function (string, start, end) {
+  var realStart = toNumber(start, 0);
+  var realEnd = toNumber(end, string.length);
+  if (realEnd == realStart) {
+    return "";
+  } else if (realEnd > realStart) {
+    return slice(string, realStart, realEnd);
+  } else {
+    return slice(string, realEnd, realStart);
+  }
+};
 
 /***/ }),
 

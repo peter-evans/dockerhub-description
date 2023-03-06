@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as fs from 'fs'
+import unicodeSubstring = require('unicode-substring')
 
 export const README_FILEPATH_DEFAULT = './README.md'
 export const IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp'
@@ -9,6 +10,8 @@ const TITLE_REGEX = `(?: +"[^"]+")?`
 const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}`
 const BLOB_PREFIX = `${REPOSITORY_URL}/blob/${process.env['GITHUB_REF_NAME']}/`
 const RAW_PREFIX = `${REPOSITORY_URL}/raw/${process.env['GITHUB_REF_NAME']}/`
+
+const MAX_BYTES = 25000
 
 type Rule = {
   /**
@@ -23,6 +26,14 @@ type Rule = {
    * part to prefix the relative url with (excluding github repository url)
    */
   absUrlPrefix: string
+}
+
+export function truncateToBytes(s: string, n: number): string {
+  let len = n
+  while (Buffer.byteLength(s) > n) {
+    s = unicodeSubstring(s, 0, len--)
+  }
+  return s
 }
 
 export async function getReadmeContent(
@@ -42,7 +53,14 @@ export async function getReadmeContent(
     imageExtensions
   )
 
-  return readmeContent
+  const truncatedReadmeContent = truncateToBytes(readmeContent, MAX_BYTES)
+  if (truncatedReadmeContent.length !== readmeContent.length) {
+    core.warning(
+      `The README content exceeds DockerHub's limit and has been truncated to ${MAX_BYTES} bytes.`
+    )
+  }
+
+  return truncatedReadmeContent
 }
 
 export function completeRelativeUrls(

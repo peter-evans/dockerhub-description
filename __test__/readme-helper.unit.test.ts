@@ -1,4 +1,4 @@
-import {completeRelativeUrls} from '../src/readme-helper'
+import {completeRelativeUrls, truncateToBytes} from '../src/readme-helper'
 
 describe('complete relative urls tests', () => {
   const GITHUB_SERVER_URL = process.env['GITHUB_SERVER_URL']
@@ -331,5 +331,14 @@ describe('complete relative urls tests', () => {
     ).toEqual(
       `[![alttext](${EXPECTED_RAW_URL}/image.svg)](https://example.com/image.svg)`
     )
+  })
+})
+
+describe('truncate to bytes tests', () => {
+  test('unicode aware truncation to a number of bytes', async () => {
+    expect(truncateToBytes('test string to be truncated', 10)).toEqual(
+      'test strin'
+    )
+    expect(truncateToBytes('😀😁😂🤣😃😄😅', 10)).toEqual('😀😁')
   })
 })
