@@ -30,8 +30,10 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 
 #### Content limits
 
-DockerHub has content limits, which if exceeded will result in the content being automatically truncated.
+DockerHub has content limits.
 The readme content is limited to 25,000 bytes, and `short-description` is limited to 100 characters.
+This action truncates content to prevent the request being rejected.
+If the content has been truncated a warning will be issued in the run log.
 
 #### Specifying the file path
 
