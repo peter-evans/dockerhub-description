@@ -42,7 +42,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateRepositoryDescription = exports.getToken = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fetch = __importStar(__nccwpck_require__(467));
-const DESCRIPTION_MAX_CHARS = 100;
 function getToken(username, password) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = {
@@ -69,7 +68,7 @@ function updateRepositoryDescription(token, repository, description, fullDescrip
             full_description: fullDescription
         };
         if (description) {
-            body['description'] = description.slice(0, DESCRIPTION_MAX_CHARS);
+            body['description'] = description;
         }
         yield fetch(`https://hub.docker.com/v2/repositories/${repository}`, {
             method: 'patch',
@@ -238,12 +237,9 @@ const core = __importStar(__nccwpck_require__(2186));
 const inputHelper = __importStar(__nccwpck_require__(5480));
 const dockerhubHelper = __importStar(__nccwpck_require__(1812));
 const readmeHelper = __importStar(__nccwpck_require__(3367));
+const utils = __importStar(__nccwpck_require__(918));
 const util_1 = __nccwpck_require__(3837);
-function getErrorMessage(error) {
-    if (error instanceof Error)
-        return error.message;
-    return String(error);
-}
+const SHORT_DESCRIPTION_MAX_BYTES = 100;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -254,6 +250,11 @@ function run() {
             core.info('Reading description source file');
             const readmeContent = yield readmeHelper.getReadmeContent(inputs.readmeFilepath, inputs.enableUrlCompletion, inputs.imageExtensions);
             core.debug(readmeContent);
+            // Truncate the short description if it is too long
+            const truncatedShortDescription = utils.truncateToBytes(inputs.shortDescription, SHORT_DESCRIPTION_MAX_BYTES);
+            if (truncatedShortDescription.length !== inputs.shortDescription.length) {
+                core.warning(`The short description exceeds DockerHub's limit and has been truncated to ${SHORT_DESCRIPTION_MAX_BYTES} bytes.`);
+            }
             // Acquire a token for the Docker Hub API
             core.info('Acquiring token');
             const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);
@@ -264,7 +265,7 @@ function run() {
         }
         catch (error) {
             core.debug((0, util_1.inspect)(error));
-            core.setFailed(getErrorMessage(error));
+            core.setFailed(utils.getErrorMessage(error));
         }
     });
 }
@@ -311,10 +312,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.completeRelativeUrls = exports.getReadmeContent = exports.truncateToBytes = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
+exports.completeRelativeUrls = exports.getReadmeContent = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(7147));
-const unicodeSubstring = __nccwpck_require__(6986);
+const utils = __importStar(__nccwpck_require__(918));
 exports.README_FILEPATH_DEFAULT = './README.md';
 exports.IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp';
 exports.ENABLE_URL_COMPLETION_DEFAULT = false;
@@ -323,14 +324,6 @@ const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHU
 const BLOB_PREFIX = `${REPOSITORY_URL}/blob/${process.env['GITHUB_REF_NAME']}/`;
 const RAW_PREFIX = `${REPOSITORY_URL}/raw/${process.env['GITHUB_REF_NAME']}/`;
 const MAX_BYTES = 25000;
-function truncateToBytes(s, n) {
-    let len = n;
-    while (Buffer.byteLength(s) > n) {
-        s = unicodeSubstring(s, 0, len--);
-    }
-    return s;
-}
-exports.truncateToBytes = truncateToBytes;
 function getReadmeContent(readmeFilepath, enableUrlCompletion, imageExtensions) {
     return __awaiter(this, void 0, void 0, function* () {
         // Fetch the readme content
@@ -338,7 +331,7 @@ function getReadmeContent(readmeFilepath, enableUrlCompletion, imageExtensions) 
             encoding: 'utf8'
         });
         readmeContent = completeRelativeUrls(readmeContent, readmeFilepath, enableUrlCompletion, imageExtensions);
-        const truncatedReadmeContent = truncateToBytes(readmeContent, MAX_BYTES);
+        const truncatedReadmeContent = utils.truncateToBytes(readmeContent, MAX_BYTES);
         if (truncatedReadmeContent.length !== readmeContent.length) {
             core.warning(`The README content exceeds DockerHub's limit and has been truncated to ${MAX_BYTES} bytes.`);
         }
@@ -444,6 +437,32 @@ function getRelativeUrlRules() {
     ];
     return rules;
 }
+
+
+/***/ }),
+
+/***/ 918:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.truncateToBytes = exports.getErrorMessage = void 0;
+const unicodeSubstring = __nccwpck_require__(6986);
+function getErrorMessage(error) {
+    if (error instanceof Error)
+        return error.message;
+    return String(error);
+}
+exports.getErrorMessage = getErrorMessage;
+function truncateToBytes(s, n) {
+    let len = n;
+    while (Buffer.byteLength(s) > n) {
+        s = unicodeSubstring(s, 0, len--);
+    }
+    return s;
+}
+exports.truncateToBytes = truncateToBytes;
 
 
 /***/ }),

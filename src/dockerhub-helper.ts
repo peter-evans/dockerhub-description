@@ -1,8 +1,6 @@
 import * as core from '@actions/core'
 import * as fetch from 'node-fetch'
 
-const DESCRIPTION_MAX_CHARS = 100
-
 export async function getToken(
   username: string,
   password: string
@@ -36,7 +34,7 @@ export async function updateRepositoryDescription(
     full_description: fullDescription
   }
   if (description) {
-    body['description'] = description.slice(0, DESCRIPTION_MAX_CHARS)
+    body['description'] = description
   }
   await fetch(`https://hub.docker.com/v2/repositories/${repository}`, {
     method: 'patch',
