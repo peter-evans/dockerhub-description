@@ -2,12 +2,10 @@ import * as core from '@actions/core'
 import * as inputHelper from './input-helper'
 import * as dockerhubHelper from './dockerhub-helper'
 import * as readmeHelper from './readme-helper'
+import * as utils from './utils'
 import {inspect} from 'util'
 
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) return error.message
-  return String(error)
-}
+const SHORT_DESCRIPTION_MAX_BYTES = 100
 
 async function run(): Promise<void> {
   try {
@@ -24,6 +22,17 @@ async function run(): Promise<void> {
       inputs.imageExtensions
     )
     core.debug(readmeContent)
+
+    // Truncate the short description if it is too long
+    const truncatedShortDescription = utils.truncateToBytes(
+      inputs.shortDescription,
+      SHORT_DESCRIPTION_MAX_BYTES
+    )
+    if (truncatedShortDescription.length !== inputs.shortDescription.length) {
+      core.warning(
+        `The short description exceeds DockerHub's limit and has been truncated to ${SHORT_DESCRIPTION_MAX_BYTES} bytes.`
+      )
+    }
 
     // Acquire a token for the Docker Hub API
     core.info('Acquiring token')
@@ -42,7 +51,7 @@ async function run(): Promise<void> {
     core.info('Request successful')
   } catch (error) {
     core.debug(inspect(error))
-    core.setFailed(getErrorMessage(error))
+    core.setFailed(utils.getErrorMessage(error))
   }
 }
 

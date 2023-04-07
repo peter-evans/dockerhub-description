@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as fs from 'fs'
-import unicodeSubstring = require('unicode-substring')
+import * as utils from './utils'
 
 export const README_FILEPATH_DEFAULT = './README.md'
 export const IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp'
@@ -28,14 +28,6 @@ type Rule = {
   absUrlPrefix: string
 }
 
-export function truncateToBytes(s: string, n: number): string {
-  let len = n
-  while (Buffer.byteLength(s) > n) {
-    s = unicodeSubstring(s, 0, len--)
-  }
-  return s
-}
-
 export async function getReadmeContent(
   readmeFilepath: string,
   enableUrlCompletion: boolean,
@@ -53,7 +45,7 @@ export async function getReadmeContent(
     imageExtensions
   )
 
-  const truncatedReadmeContent = truncateToBytes(readmeContent, MAX_BYTES)
+  const truncatedReadmeContent = utils.truncateToBytes(readmeContent, MAX_BYTES)
   if (truncatedReadmeContent.length !== readmeContent.length) {
     core.warning(
       `The README content exceeds DockerHub's limit and has been truncated to ${MAX_BYTES} bytes.`
