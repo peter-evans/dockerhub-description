@@ -255,12 +255,13 @@ function run() {
             if (truncatedShortDescription.length !== inputs.shortDescription.length) {
                 core.warning(`The short description exceeds DockerHub's limit and has been truncated to ${SHORT_DESCRIPTION_MAX_BYTES} bytes.`);
             }
+            core.debug(`Truncated short description: ${truncatedShortDescription}`);
             // Acquire a token for the Docker Hub API
             core.info('Acquiring token');
             const token = yield dockerhubHelper.getToken(inputs.username, inputs.password);
             // Send a PATCH request to update the description of the repository
             core.info('Sending PATCH request');
-            yield dockerhubHelper.updateRepositoryDescription(token, inputs.repository, inputs.shortDescription, readmeContent);
+            yield dockerhubHelper.updateRepositoryDescription(token, inputs.repository, truncatedShortDescription, readmeContent);
             core.info('Request successful');
         }
         catch (error) {

@@ -33,6 +33,7 @@ async function run(): Promise<void> {
         `The short description exceeds DockerHub's limit and has been truncated to ${SHORT_DESCRIPTION_MAX_BYTES} bytes.`
       )
     }
+    core.debug(`Truncated short description: ${truncatedShortDescription}`)
 
     // Acquire a token for the Docker Hub API
     core.info('Acquiring token')
@@ -45,7 +46,7 @@ async function run(): Promise<void> {
     await dockerhubHelper.updateRepositoryDescription(
       token,
       inputs.repository,
-      inputs.shortDescription,
+      truncatedShortDescription,
       readmeContent
     )
     core.info('Request successful')
