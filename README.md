@@ -8,6 +8,8 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 ## Usage
 
 ```yml
+    - uses: actions/checkout@v4
+
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
       with:
@@ -81,7 +83,7 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
@@ -102,7 +104,7 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
