@@ -27,7 +27,7 @@ inputs:
       File extensions that will be treated as images
       Default: `bmp,gif,jpg,jpeg,png,svg,webp`
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'upload'

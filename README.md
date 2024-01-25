@@ -11,7 +11,7 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
     - uses: actions/checkout@v4
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -44,7 +44,7 @@ If this is not the case the path can be specified with the `readme-filepath` inp
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -58,7 +58,7 @@ The GitHub repository description can be used for the Docker Hub `short-descript
 
 ```yml
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -86,7 +86,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -107,7 +107,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
