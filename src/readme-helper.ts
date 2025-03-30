@@ -4,7 +4,6 @@ import * as utils from './utils'
 
 export const README_FILEPATH_DEFAULT = './README.md'
 export const IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp'
-export const ENABLE_URL_COMPLETION_DEFAULT = false
 
 const TITLE_REGEX = `(?: +"[^"]+")?`
 const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}`

@@ -26,11 +26,4 @@ describe('input-helper tests', () => {
     const inputs = getInputs()
     expect(inputs.enableUrlCompletion).toBe(true)
   })
-
-  test('enableUrlCompletion defaults to false if not set', () => {
-    delete process.env['INPUT_ENABLE-URL-COMPLETION']
-
-    const inputs = getInputs()
-    expect(inputs.enableUrlCompletion).toBe(false)
-  })
 })
