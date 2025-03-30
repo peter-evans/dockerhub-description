@@ -1,4 +1,3 @@
-// import * as core from '@actions/core'
 import {getInputs} from '../src/input-helper'
 
 describe('input-helper tests', () => {
