@@ -18,7 +18,7 @@ export function getInputs(): Inputs {
     repository: core.getInput('repository'),
     shortDescription: core.getInput('short-description'),
     readmeFilepath: core.getInput('readme-filepath'),
-    enableUrlCompletion: Boolean(core.getInput('enable-url-completion')),
+    enableUrlCompletion: core.getBooleanInput('enable-url-completion'),
     imageExtensions: core.getInput('image-extensions')
   }
 
@@ -54,7 +54,8 @@ export function getInputs(): Inputs {
   }
 
   if (!inputs.enableUrlCompletion && process.env['ENABLE_URL_COMPLETION']) {
-    inputs.enableUrlCompletion = Boolean(process.env['ENABLE_URL_COMPLETION'])
+    inputs.enableUrlCompletion =
+      process.env['ENABLE_URL_COMPLETION'].toLowerCase() === 'true'
   }
 
   if (!inputs.imageExtensions && process.env['IMAGE_EXTENSIONS']) {
@@ -64,9 +65,6 @@ export function getInputs(): Inputs {
   // Set defaults
   if (!inputs.readmeFilepath) {
     inputs.readmeFilepath = readmeHelper.README_FILEPATH_DEFAULT
-  }
-  if (!inputs.enableUrlCompletion) {
-    inputs.enableUrlCompletion = readmeHelper.ENABLE_URL_COMPLETION_DEFAULT
   }
   if (!inputs.imageExtensions) {
     inputs.imageExtensions = readmeHelper.IMAGE_EXTENSIONS_DEFAULT
