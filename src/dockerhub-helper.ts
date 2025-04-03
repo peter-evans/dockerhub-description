@@ -6,10 +6,10 @@ export async function getToken(
   password: string
 ): Promise<string> {
   const body = {
-    username: username,
-    password: password
+    identifier: username,
+    secret: password
   }
-  const response = await fetch('https://hub.docker.com/v2/users/login', {
+  const response = await fetch('https://hub.docker.com/v2/auth/token', {
     method: 'post',
     body: JSON.stringify(body),
     headers: {'Content-Type': 'application/json'}
@@ -41,7 +41,7 @@ export async function updateRepositoryDescription(
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `JWT ${token}`
+      Authorization: `Bearer ${token}`
     }
   }).then(res => {
     if (!res.ok) {
