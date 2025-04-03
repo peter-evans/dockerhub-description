@@ -45,10 +45,10 @@ const fetch = __importStar(__nccwpck_require__(6705));
 function getToken(username, password) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = {
-            username: username,
-            password: password
+            identifier: username,
+            secret: password
         };
-        const response = yield fetch('https://hub.docker.com/v2/users/login', {
+        const response = yield fetch('https://hub.docker.com/v2/auth/token', {
             method: 'post',
             body: JSON.stringify(body),
             headers: { 'Content-Type': 'application/json' }
@@ -75,7 +75,7 @@ function updateRepositoryDescription(token, repository, description, fullDescrip
             body: JSON.stringify(body),
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `JWT ${token}`
+                Authorization: `Bearer ${token}`
             }
         }).then(res => {
             if (!res.ok) {
