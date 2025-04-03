@@ -128,7 +128,7 @@ function getInputs() {
         repository: core.getInput('repository'),
         shortDescription: core.getInput('short-description'),
         readmeFilepath: core.getInput('readme-filepath'),
-        enableUrlCompletion: core.getBooleanInput('enable-url-completion'),
+        enableUrlCompletion: Boolean(core.getInput('enable-url-completion')),
         imageExtensions: core.getInput('image-extensions')
     };
     // Environment variable input alternatives and their aliases
@@ -157,8 +157,7 @@ function getInputs() {
         inputs.readmeFilepath = process.env['README_FILEPATH'];
     }
     if (!inputs.enableUrlCompletion && process.env['ENABLE_URL_COMPLETION']) {
-        inputs.enableUrlCompletion =
-            process.env['ENABLE_URL_COMPLETION'].toLowerCase() === 'true';
+        inputs.enableUrlCompletion = Boolean(process.env['ENABLE_URL_COMPLETION']);
     }
     if (!inputs.imageExtensions && process.env['IMAGE_EXTENSIONS']) {
         inputs.imageExtensions = process.env['IMAGE_EXTENSIONS'];
@@ -166,6 +165,9 @@ function getInputs() {
     // Set defaults
     if (!inputs.readmeFilepath) {
         inputs.readmeFilepath = readmeHelper.README_FILEPATH_DEFAULT;
+    }
+    if (!inputs.enableUrlCompletion) {
+        inputs.enableUrlCompletion = readmeHelper.ENABLE_URL_COMPLETION_DEFAULT;
     }
     if (!inputs.imageExtensions) {
         inputs.imageExtensions = readmeHelper.IMAGE_EXTENSIONS_DEFAULT;
@@ -311,12 +313,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.completeRelativeUrls = exports.getReadmeContent = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
+exports.completeRelativeUrls = exports.getReadmeContent = exports.ENABLE_URL_COMPLETION_DEFAULT = exports.IMAGE_EXTENSIONS_DEFAULT = exports.README_FILEPATH_DEFAULT = void 0;
 const core = __importStar(__nccwpck_require__(7484));
 const fs = __importStar(__nccwpck_require__(9896));
 const utils = __importStar(__nccwpck_require__(9277));
 exports.README_FILEPATH_DEFAULT = './README.md';
 exports.IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp';
+exports.ENABLE_URL_COMPLETION_DEFAULT = false;
 const TITLE_REGEX = `(?: +"[^"]+")?`;
 const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}`;
 const BLOB_PREFIX = `${REPOSITORY_URL}/blob/${process.env['GITHUB_REF_NAME']}/`;

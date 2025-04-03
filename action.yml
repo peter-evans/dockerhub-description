@@ -22,7 +22,6 @@ inputs:
     description: >
       Enables completion of relative URLs to absolute ones
       Default: `false`
-    default: "false"
   image-extensions:
     description: >
       File extensions that will be treated as images
