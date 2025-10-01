@@ -20,8 +20,8 @@ export async function getToken(
     )
   }
   const json = await response.json()
-  core.setSecret(json['token'])
-  return json['token']
+  core.setSecret(json['access_token'])
+  return json['access_token']
 }
 
 export async function updateRepositoryDescription(
