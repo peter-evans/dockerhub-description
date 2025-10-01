@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import * as fetch from 'node-fetch'
 
 export async function getToken(
   username: string,
