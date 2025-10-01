@@ -9,7 +9,7 @@ export async function getToken(
     secret: password
   }
   const response = await fetch('https://hub.docker.com/v2/auth/token', {
-    method: 'post',
+    method: 'POST',
     body: JSON.stringify(body),
     headers: {'Content-Type': 'application/json'}
   })
@@ -36,7 +36,7 @@ export async function updateRepositoryDescription(
     body['description'] = description
   }
   await fetch(`https://hub.docker.com/v2/repositories/${repository}`, {
-    method: 'patch',
+    method: 'PATCH',
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',

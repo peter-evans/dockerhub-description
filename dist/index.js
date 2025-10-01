@@ -48,7 +48,7 @@ function getToken(username, password) {
             secret: password
         };
         const response = yield fetch('https://hub.docker.com/v2/auth/token', {
-            method: 'post',
+            method: 'POST',
             body: JSON.stringify(body),
             headers: { 'Content-Type': 'application/json' }
         });
@@ -70,7 +70,7 @@ function updateRepositoryDescription(token, repository, description, fullDescrip
             body['description'] = description;
         }
         yield fetch(`https://hub.docker.com/v2/repositories/${repository}`, {
-            method: 'patch',
+            method: 'PATCH',
             body: JSON.stringify(body),
             headers: {
                 'Content-Type': 'application/json',
