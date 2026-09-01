@@ -31,7 +31,9 @@
   "homepage": "https://github.com/peter-evans/dockerhub-description#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "unicode-substring": "^0.1.0"
+    "gray-matter": "^4.0.3",
+    "unicode-substring": "^0.1.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
