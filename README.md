@@ -25,10 +25,30 @@ This is useful if you `docker push` your images to Docker Hub. It provides an ea
 | `username` | (**required**) Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have `Admin` permissions for the repository. | |
 | `password` | (**required**) Docker Hub password or [Personal Access Token](https://docs.docker.com/docker-hub/access-tokens/) with `read/write/delete` scope. | |
 | `repository` | Docker Hub repository in the format `<namespace>/<name>`. | `github.repository` |
-| `short-description` | Docker Hub repository short description. | |
+| `short-description` | Docker Hub repository short description. | frontmatter `short-description` on the readme, if any |
 | `readme-filepath` | Path to the repository readme. | `./README.md` |
-| `enable-url-completion` | Enables completion of relative URLs to absolute ones. See also [known Issues](#url-completion-known-issues). | `false` |
-| `image-extensions` | File extensions that will be treated as images. | `bmp,gif,jpg,jpeg,png,svg,webp` |
+| `enable-url-completion` | Enables completion of relative URLs to absolute ones. See also [known Issues](#url-completion-known-issues). | frontmatter `enable-url-completion` on the readme, else `false` |
+| `image-extensions` | File extensions that will be treated as images. | frontmatter `image-extensions` on the readme, else `bmp,gif,jpg,jpeg,png,svg,webp` |
+
+#### Readme frontmatter
+
+`short-description`, `enable-url-completion` and `image-extensions` can be set from a YAML frontmatter block on the
+readme instead of the workflow file. Useful when you want the Docker Hub metadata to live next to the readme it
+describes, or when the same readme is authored by someone who doesn't touch the workflow:
+
+```markdown
+---
+short-description: My container image
+enable-url-completion: true
+image-extensions: [png, svg]
+---
+
+# My container image
+
+...
+```
+
+Explicit `with:` inputs still win — frontmatter only fills what's unset. The frontmatter block itself is stripped from what's uploaded to Docker Hub.
 
 #### Content limits
 
