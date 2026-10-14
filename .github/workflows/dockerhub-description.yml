@@ -18,10 +18,17 @@ jobs:
           sed -i 's/# Docker Hub Description/# [Docker Hub Description](https:\/\/github.com\/peter-evans\/dockerhub-description)/' README.md
           sed -i 's/(LICENSE)/(https:\/\/github.com\/peter-evans\/dockerhub-description\/blob\/main\/LICENSE)/' README.md
 
-      - name: Docker Hub Description
-        uses: ./
+      # Log in separately; the action below picks the credentials up
+      # from ~/.docker/config.json via the docker-config fallback and
+      # doesn't need `username` / `password` inputs.
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Docker Hub Description
+        uses: ./
+        with:
           repository: peterevans/dockerhub-description
           short-description: ${{ github.event.repository.description }}
