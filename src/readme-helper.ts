@@ -1,10 +1,71 @@
 import * as core from '@actions/core'
 import * as fs from 'fs'
+import matter from 'gray-matter'
+import {z} from 'zod'
 import * as utils from './utils'
 
 export const README_FILEPATH_DEFAULT = './README.md'
 export const IMAGE_EXTENSIONS_DEFAULT = 'bmp,gif,jpg,jpeg,png,svg,webp'
 export const ENABLE_URL_COMPLETION_DEFAULT = false
+
+// `.passthrough()` so unknown keys (frontmatter this action doesn't
+// consume) are left alone rather than erroring — a readme may carry
+// metadata for other tools.
+const FrontmatterSchema = z
+  .object({
+    'short-description': z.string().optional(),
+    'enable-url-completion': z.boolean().optional(),
+    'image-extensions': z.array(z.string()).optional()
+  })
+  .passthrough()
+
+/**
+ * YAML-frontmatter keys recognised on the README. Values fill the
+ * corresponding action inputs when the caller left them unset.
+ * Shape is validated at runtime by `FrontmatterSchema`, so a bad
+ * type (e.g. `enable-url-completion: "false"` quoted as a string)
+ * surfaces as a clear parse error rather than misbehaving silently.
+ */
+export type ReadmeFrontmatter = z.infer<typeof FrontmatterSchema>
+
+// Parse cache — `getReadmeFrontmatter` runs at input-resolution time
+// and `getReadmeContent` runs right after, both against the same path.
+// The cache lets them share the read + parse. Keyed on absolute path
+// so relative and absolute references to the same file collapse to
+// one entry.
+const parseCache = new Map<string, matter.GrayMatterFile<string>>()
+
+function parseReadme(readmeFilepath: string): matter.GrayMatterFile<string> {
+  const key = fs.realpathSync(readmeFilepath)
+  const hit = parseCache.get(key)
+  if (hit) return hit
+  const raw = fs.readFileSync(key, {encoding: 'utf8'})
+  const parsed = matter(raw)
+  parseCache.set(key, parsed)
+  return parsed
+}
+
+/**
+ * Read the readme and parse any YAML frontmatter block. When absent,
+ * returns an empty metadata object. Errors reading the file bubble up;
+ * malformed YAML surfaces as a gray-matter error with a clear message.
+ * Docker Hub renders `---`-delimited blocks invisibly on the landing
+ * page, but we strip anyway so what's uploaded matches what's rendered
+ * and consumers of the raw description API see clean content.
+ */
+export function getReadmeFrontmatter(
+  readmeFilepath: string
+): ReadmeFrontmatter {
+  const raw = parseReadme(readmeFilepath).data
+  const parsed = FrontmatterSchema.safeParse(raw)
+  if (!parsed.success) {
+    const detail = parsed.error.issues
+      .map(i => `${i.path.join('.') || '<root>'}: ${i.message}`)
+      .join('; ')
+    throw new Error(`Invalid frontmatter in ${readmeFilepath}: ${detail}`)
+  }
+  return parsed.data
+}
 
 const TITLE_REGEX = `(?: +"[^"]+")?`
 const REPOSITORY_URL = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}`
@@ -33,10 +94,8 @@ export async function getReadmeContent(
   enableUrlCompletion: boolean,
   imageExtensions: string
 ): Promise<string> {
-  // Fetch the readme content
-  let readmeContent = await fs.promises.readFile(readmeFilepath, {
-    encoding: 'utf8'
-  })
+  // `.content` is the readme body, without the frontmatter.
+  let readmeContent = parseReadme(readmeFilepath).content
 
   readmeContent = completeRelativeUrls(
     readmeContent,

@@ -13,18 +13,25 @@ inputs:
       Docker Hub repository in the format `<namespace>/<name>`
       Default: `github.repository`
   short-description:
-    description: Docker Hub repository short description
+    description: >
+      Docker Hub repository short description. Falls back to a
+      `short-description` field in the readme's YAML frontmatter, when
+      present.
   readme-filepath:
     description: >
       Path to the repository readme
       Default: `./README.md`
   enable-url-completion:
     description: >
-      Enables completion of relative URLs to absolute ones
+      Enables completion of relative URLs to absolute ones. Falls back
+      to an `enable-url-completion` field in the readme's YAML
+      frontmatter, when present.
       Default: `false`
   image-extensions:
     description: >
-      File extensions that will be treated as images
+      File extensions that will be treated as images. Falls back to
+      an `image-extensions` field in the readme's YAML frontmatter,
+      when present.
       Default: `bmp,gif,jpg,jpeg,png,svg,webp`
 runs:
   using: 'node24'

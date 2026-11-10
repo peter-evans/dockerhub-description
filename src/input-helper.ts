@@ -61,10 +61,46 @@ export function getInputs(): Inputs {
     inputs.imageExtensions = process.env['IMAGE_EXTENSIONS']
   }
 
-  // Set defaults
+  // The readme filepath needs to be resolved before we can look at
+  // frontmatter — apply its default first.
   if (!inputs.readmeFilepath) {
     inputs.readmeFilepath = readmeHelper.README_FILEPATH_DEFAULT
   }
+
+  // YAML frontmatter on the README supplies `short-description`,
+  // `enable-url-completion`, and `image-extensions` when the caller
+  // left the corresponding input (and env-var) unset. Anything the
+  // caller set explicitly wins; frontmatter is a workflow-authoring
+  // convenience to keep the DH-facing metadata alongside the
+  // DH-facing README instead of split between a file and workflow YAML.
+  // A missing readme file is deferred to getReadmeContent so the
+  // existing validation flow owns the "no readme" message; anything
+  // else (malformed YAML, invalid frontmatter shape) is a hard fail.
+  try {
+    const fm = readmeHelper.getReadmeFrontmatter(inputs.readmeFilepath)
+    if (!inputs.shortDescription && fm['short-description']) {
+      inputs.shortDescription = fm['short-description']
+    }
+    if (!inputs.enableUrlCompletion && fm['enable-url-completion']) {
+      inputs.enableUrlCompletion = fm['enable-url-completion']
+    }
+    if (!inputs.imageExtensions && fm['image-extensions']?.length) {
+      // `image-extensions` is a `string[]` in the readme (natural YAML
+      // shape) but the input the rest of the code consumes is comma-
+      // separated. Join at the boundary.
+      inputs.imageExtensions = fm['image-extensions'].join(',')
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      core.debug(
+        `readme not found for frontmatter check: ${inputs.readmeFilepath}`
+      )
+    } else {
+      throw err
+    }
+  }
+
+  // Set defaults for what's still unset.
   if (!inputs.enableUrlCompletion) {
     inputs.enableUrlCompletion = readmeHelper.ENABLE_URL_COMPLETION_DEFAULT
   }
