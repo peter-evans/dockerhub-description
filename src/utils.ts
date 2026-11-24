@@ -1,4 +1,4 @@
-import unicodeSubstring = require('unicode-substring')
+import unicodeSubstring from 'unicode-substring'
 
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message
