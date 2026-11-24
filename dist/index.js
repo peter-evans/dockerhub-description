@@ -442,13 +442,16 @@ function getRelativeUrlRules() {
 /***/ }),
 
 /***/ 277:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.truncateToBytes = exports.getErrorMessage = void 0;
-const unicodeSubstring = __nccwpck_require__(534);
+const unicode_substring_1 = __importDefault(__nccwpck_require__(534));
 function getErrorMessage(error) {
     if (error instanceof Error)
         return error.message;
@@ -458,7 +461,7 @@ exports.getErrorMessage = getErrorMessage;
 function truncateToBytes(s, n) {
     let len = n;
     while (Buffer.byteLength(s) > n) {
-        s = unicodeSubstring(s, 0, len--);
+        s = (0, unicode_substring_1.default)(s, 0, len--);
     }
     return s;
 }
