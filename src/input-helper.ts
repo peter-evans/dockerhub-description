@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as readmeHelper from './readme-helper'
+import {getCredsFromDockerConfig} from './docker-config'
 
 interface Inputs {
   username: string
@@ -36,6 +37,23 @@ export function getInputs(): Inputs {
   }
   if (!inputs.password && process.env['DOCKER_PASSWORD']) {
     inputs.password = process.env['DOCKER_PASSWORD']
+  }
+
+  // Docker config fallback — reads credentials populated by `docker
+  // login` or `docker/login-action` from `~/.docker/config.json` (or
+  // `$DOCKER_CONFIG/config.json`).
+  if (!inputs.username && !inputs.password) {
+    const creds = getCredsFromDockerConfig()
+    if (creds) {
+      inputs.username = creds.username
+      inputs.password = creds.password
+      core.info('Loaded Docker Hub credentials from docker config')
+    }
+  }
+
+  // Ensures we don't log passwords in plaintext
+  if (inputs.password) {
+    core.setSecret(inputs.password)
   }
 
   if (!inputs.repository && process.env['DOCKERHUB_REPOSITORY']) {
